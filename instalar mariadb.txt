@@ -1,0 +1,23 @@
+Para instalar el paquete, como siempre primero actualizamos los repositorios y luego procedemos a instalar el siguiente paquete:
+
+apt install mariadb-server
+
+Tras la instalación, procedemos a habilitar el servicio al arranque y lo iniciamos:
+
+systemctl start mariadb
+systemctl enable mariadb
+Configurar MariaDB
+
+Ahora que ya tenemos el servicio levantado, tocará aplicar un poco de configuración, para ello ejecutaremos el comando mysql_secure_installation para configurarlo de la siguiente manera:
+
+mysql_secure_installation
+
+Seguiremos los siguientes pasos:
+
+Enter current password for root (enter for none): Enter
+Set root password? [Y/n] Y
+Remove anonymous users? [Y/n] Y
+Disallow root login remotely? [Y/n] Y
+Remove test database and access to it? [Y/n] Y
+Reload privilege tables now? [Y/n] Y
+¡Y listo! Ya tenemos MariaDB instalado y configurado correctamente.
