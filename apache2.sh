@@ -8,7 +8,7 @@ sudo snap install curl
 curl -4 icanhazip.com
 cd /var/www
 sudo mkdir servidor
-sudo chown -R servidor:servidor servidor/
+sudo chown -R server:server servidor/
 sudo chmod -R 755 servidor/
 cd servidor/
 sudo touch index.html
