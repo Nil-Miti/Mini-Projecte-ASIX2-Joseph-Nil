@@ -33,8 +33,8 @@ sudo echo '<!DOCTYPE html>
 </body>
 </html>' > index.html
 
-cd /etc/apache2/sites-avaiable/
-sudo touch /etc/apache/sites-avaiable/servidor.conf
+cd /etc/apache2/sites-available
+sudo touch servidor.conf
 sudo chmod 777 servidor.conf
 sudo echo '<VirtualHost *:80>      
     ServerAdmin webmaster@localhost
