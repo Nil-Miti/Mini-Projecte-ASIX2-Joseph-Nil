@@ -2,7 +2,7 @@
 
  #Para instalar el paquete, como siempre primero actualizamos los repositorios y luego procedemos a instalar el siguiente paquete:
 
-sudo update
+sudo apt update
 sudo apt install mariadb-server -y
 
 #Tras la instalación, procedemos a habilitar el servicio al arranque y lo iniciamos:
@@ -30,6 +30,4 @@ sudo apt install mongodb-org -y
 # Iniciar el servicio de MongoDB
 sudo systemctl start mongod
 
-#Este chmod ser apara darle al script permisos de ejecucion
-chmod +x "$0"
 
