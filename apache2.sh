@@ -12,7 +12,8 @@ sudo chown -R servidor:servidor servidor/
 sudo chmod -R 755 servidor/
 cd servidor/
 sudo touch index.html
-echo "<!DOCTYPE html>
+sudo chmod 777 index.html
+sudo echo '<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -30,18 +31,19 @@ echo "<!DOCTYPE html>
     </form>
 
 </body>
-</html>" > index.html
+</html>' > index.html
 
 cd /etc/apache2/sites-avaiable/
 sudo touch servidor.conf
-echo "<VirtualHost *:80>      
+sudo chmod 777 servidor.conf
+sudo echo '<VirtualHost *:80>      
     ServerAdmin webmaster@localhost
     ServerName servidor
     ServerAlias www.servidor
     DocumentRoot /var/www/servidor
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>" > servidor.conf
+</VirtualHost>' > servidor.conf
 sudo a2ensite servidor.conf
 sudo a2dissite 000-default.conf
 sudo systemctl restart apache2
@@ -49,7 +51,8 @@ cd /var/www/servidor
 sudo mkdir css
 cd css/
 touch styles.css
-echo "body {
+sudo chmod 777 styles.css
+echo 'body {
     font-family: Arial, sans-serif;
     margin: 20px;
     padding: 20px;
@@ -83,13 +86,14 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #45a049;
-}" > styles.css
+}' > styles.css
 sudo systemctl restart apache2
 cd /var/www/servidor
 sudo mkdir auth
 cd auth/
 sudo touch login.php
-sudo echo "<?php
+sudo chmod 777 login.php
+sudo echo '<?php
 session_start();
 
 if (isset($_REQUEST['login'])) {
@@ -134,10 +138,11 @@ else {
                 </p>
             </form>
 </body>
-</html>" > login.php
+</html>' > login.php
 cd /var/www/servidor/css
 sudo touch login.css
-sudo echo "body {
+sudo chmod 777 login.css
+sudo echo 'body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
@@ -179,10 +184,11 @@ button {
 
 button:hover {
     background-color: #45a049;
-}" > login.css
+}' > login.css
 cd /var/www/servidor/auth
 sudo touch crear_user.php
-sudo echo "<?php
+sudo chmod 777 crear_user.php
+sudo echo '<?php
 session_start();
 ?>
 <html>
@@ -246,10 +252,11 @@ session_start();
     }
     ?>
 </body>
-</html>" > crear_user.php
+</html>' > crear_user.php
 cd /var/www/servidor
 sudo touch upload.php
-sudo echo "<?php
+sudo chmod 777 upload.php
+sudo echo '<?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $targetDir = 'uploads/';
 
@@ -268,9 +275,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo 'Acceso no autorizado.';
 }
-?>" > upload.php
+?>' > upload.php
 sudo systemctl restart apache2
-
+chmod +x "$0"
 
 
 
