@@ -2,13 +2,14 @@
 
 sudo apt install apache2
 sudo apt update
+sudo apt install php
 sudo ufw allow 'Apache'
 sudo systemctl start apache2
 sudo snap install curl
 curl -4 icanhazip.com
 cd /var/www
 sudo mkdir servidor
-sudo chown -R server:server servidor/
+sudo chown -R servidor:servidor servidor/
 sudo chmod -R 755 servidor/
 cd servidor/
 sudo touch index.html
@@ -18,23 +19,21 @@ sudo echo '<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FASE 0</title>
-<link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <title>Subir Archivo</title>
 </head>
 <body>
-
-    <h1>FASE 0</h1>
-  <form action="upload.php" method="post" enctype="multipart/form-data">
-        <label for="file">Selecciona archivos para subir:</label>
-        <input type="file" name="files[]" id="file" multiple directory webkitdi>
-        <input type="submit" value="Subir archivos">
+    <h1>Subir Archivo</h1>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+        <label for="file">Seleccionar Archivo:</label>
+        <input type="file" name="file" id="file" required>
+        <br>
+        <input type="submit" value="Subir Archivo">
     </form>
-
 </body>
 </html>' > index.html
 
-cd /etc/apache2/sites-available
-sudo touch servidor.conf
+cd /etc/apache2/sites-avaiable/
+sudo touch /etc/apache/sites-avaiable/servidor.conf
 sudo chmod 777 servidor.conf
 sudo echo '<VirtualHost *:80>      
     ServerAdmin webmaster@localhost
@@ -257,27 +256,60 @@ cd /var/www/servidor
 sudo touch upload.php
 sudo chmod 777 upload.php
 sudo echo '<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $targetDir = 'uploads/';
+$target_dir = "uploads/";  // Carpeta donde se guardarán los archivos
+$target_file = $target_dir . basename($_FILES["file"]["name"]);
+$uploadOk = 1;
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    if (!file_exists($targetDir)) {
-        mkdir($targetDir, 0777, true);
+// Verificar si el archivo es una imagen real o falso
+if (isset($_POST["submit"])) {
+    $check = getimagesize($_FILES["file"]["tmp_name"]);
+    if ($check !== false) {
+        echo "El archivo es una imagen - " . $check["mime"] . ".";
+        $uploadOk = 1;
+    } else {
+        echo "El archivo no es una imagen.";
+        $uploadOk = 0;
     }
+}
 
-    $files = $_FILES['files'];
+// Verificar si el archivo ya existe
+if (file_exists($target_file)) {
+    echo "Lo siento, el archivo ya existe.";
+    $uploadOk = 0;
+}
 
-    for ($i = 0; $i < count($files['name']); $i++) {
-        $targetFile = $targetDir . basename($files['name'][$i]);
-        move_uploaded_file($files['tmp_name'][$i], $targetFile);
-    }
+// Verificar el tamaño del archivo
+if ($_FILES["file"]["size"] > 500000) {
+    echo "Lo siento, el archivo es demasiado grande.";
+    $uploadOk = 0;
+}
 
-    echo 'Archivos subidos con éxito.';
+// Permitir solo ciertos formatos de archivo
+$allowed_formats = array("jpg", "jpeg", "png", "gif");
+if (!in_array($imageFileType, $allowed_formats)) {
+    echo "Lo siento, solo se permiten archivos JPG, JPEG, PNG y GIF.";
+    $uploadOk = 0;
+}
+
+// Verificar si $uploadOk es 0 por un error
+if ($uploadOk == 0) {
+    echo "Lo siento, tu archivo no fue cargado.";
 } else {
-    echo 'Acceso no autorizado.';
+    // Si todo está bien, intenta cargar el archivo
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+        echo "El archivo " . basename($_FILES["file"]["name"]) . " ha sido cargado.";
+    } else {
+        echo "Lo siento, hubo un error al cargar tu archivo.";   
+        }
 }
 ?>' > upload.php
+cd /var/www/servidor
+mkdir uploads
+chmod 777 uploads
 sudo systemctl restart apache2
 chmod +x "$0"
+
 
 
 
