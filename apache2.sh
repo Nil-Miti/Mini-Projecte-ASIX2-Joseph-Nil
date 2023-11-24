@@ -19,6 +19,7 @@ sudo echo '<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
     <title>Subir Archivo</title>
 </head>
 <body>
@@ -305,11 +306,6 @@ if ($uploadOk == 0) {
 }
 ?>' > upload.php
 cd /var/www/servidor
-mkdir uploads
-chmod 777 uploads
+sudo mkdir uploads
+sudo chmod 777 uploads
 sudo systemctl restart apache2
-chmod +x "$0"
-
-
-
-
