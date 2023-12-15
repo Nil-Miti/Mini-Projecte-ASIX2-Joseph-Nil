@@ -1,10 +1,4 @@
 <?php
-session_start();
-?>
-
-<?php
-// Verifica si se ha enviado el formulario
-if (isset($_SESSION['valido']) && $_SESSION['valido'] == 1) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Conexión a la base de datos (modifica según tus credenciales)
         $servername = "localhost";
@@ -35,11 +29,6 @@ if (isset($_SESSION['valido']) && $_SESSION['valido'] == 1) {
         // Cierra la conexión
         $conn->close();
     }
-} else {
-    echo "<h1>No te has validado! Clic en 'Volver al inicio' y inicia sesión.</h1>";
-    // Puedes redirigir al usuario a la página de inicio de sesión aquí
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
