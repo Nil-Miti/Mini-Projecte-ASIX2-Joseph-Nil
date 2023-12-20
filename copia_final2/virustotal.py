@@ -1,9 +1,9 @@
-import os
-import hashlib
-import requests
-import json
-import shutil
 from pymongo import MongoClient
+import os  # Importamos el módulo para trabajar con el sistema de archivos
+import hashlib  # Importamos el módulo para calcular el hash SHA-256
+import requests  # Importamos el módulo para realizar solicitudes HTTP
+import json  # Importamos el módulo para trabajar con datos JSON
+import shutil  # Importamos el módulo para operaciones de archivo (mover archivos)
 
 # Definir la ubicación del directorio de carga, la carpeta para archivos infectados y no infectados.
 directorios = {
@@ -11,13 +11,11 @@ directorios = {
     'infectados': '/var/www/servidor/infectados/',
     'limpios': '/var/www/servidor/limpios/',
 }
-
-# Conectar a MongoDB (asegúrate de tener MongoDB instalado y en ejecución)
 client = MongoClient('localhost', 27017)
 db = client['registros']
 archivos_collection = db['archivos']
-
-# Verificamos si el directorio de carga está vacío.
+# Verificamos si el directorio de carga está vacío. 
+# Si no hay archivos para procesar, se muestra un mensaje y el programa se cierra.
 if not os.listdir(directorios['carga']):
     print("La carpeta de carga está vacía. No hay archivos para procesar.")
     exit()
@@ -33,55 +31,63 @@ def calcular_hash(archivo):
             sha256.update(datos)
     return sha256.hexdigest()
 
-# Función para obtener el informe de VirusTotal.
-def get_file_report(url):
+# Función para enviar archivo a VirusTotal y obtener datos adicionales.
+def enviar_a_virustotal(archivo):
     api_key = '7d3b0c36cb6ffa9836bbe4069bd6f7f1c16e1b52f7f64fb2365eb8fdbd781343'
+    url = 'https://www.virustotal.com/api/v3/files'
     headers = {
         'x-apikey': api_key,
     }
 
-    response = requests.get(url, headers=headers)
-    return response.json()
-
-# Función para obtener el número de análisis maliciosos.
-def obtener_numero_maliciosos(informe):
-    return informe.get('data', {}).get('attributes', {}).get('last_analysis_stats', {}).get('malicious', 0)
-
-# Procesar cada archivo en el directorio de carga.
-for archivo in os.listdir(directorios['carga']):
-    ruta_completa = os.path.join(directorios['carga'], archivo)
-    
-    # Calcular el hash del archivo.
-    archivo_hash = calcular_hash(ruta_completa)
-
-    # Enviar a VirusTotal y obtener el informe.
-    api_url = 'https://www.virustotal.com/api/v3/files'
-    headers = {'x-apikey': '7d3b0c36cb6ffa9836bbe4069bd6f7f1c16e1b52f7f64fb2365eb8fdbd781343'}
-    with open(ruta_completa, 'rb') as file:
-        response = requests.post(api_url, headers=headers, files={'file': file})
-
-        # Obtener la URL del informe.
+    with open(archivo, 'rb') as file:
+        response = requests.post(url, headers=headers, files={'file': file})
         result = response.json()
-        url_self = result['data']['links']['self']
+        url_self = result['data']['links']['self']  # Guardar el valor de 'self'
+    return url_self
+
+# Función para obtener el informe de VirusTotal de una URL 'self'.
+def get_file_report(url_self):
+    headers = {
+        "accept": "application/json",
+        "x-apikey": "7d3b0c36cb6ffa9836bbe4069bd6f7f1c16e1b52f7f64fb2365eb8fdbd781343"
+    }
+
+    response = requests.get(url_self, headers=headers)
+    informe = response.json()
+    return informe
+
+def obtener_numero_maliciosos(informe):
+    stats = informe.get('data', {}).get('attributes', {}).get('stats', {})
+    return stats.get('malicious', 0)
+
+# Recorrer los archivos en el directorio de entrada
+for root, dirs, files in os.walk(directorios['carga']):
+    for file in files:
+        archivo = os.path.join(root, file)
+
+        # Calcular el hash del archivo.
+        archivo_hash = calcular_hash(archivo)
+
+        # Enviar el archivo a VirusTotal y obtener la URL 'self'
+        url_self = enviar_a_virustotal(archivo)
+
+        # Obtener el informe de archivo de VirusTotal utilizando la URL 'self'
         informe = get_file_report(url_self)
 
-        # Obtener el número de informes maliciosos.
+        # Obtener el número de informes maliciosos
         num_maliciosos = obtener_numero_maliciosos(informe)
-
-        # Determinar el estado del archivo y moverlo.
+        
+        # Determinar si el archivo está infectado o limpio y moverlo
         if num_maliciosos > 1:
             estado = 'Infectado'
             destino = directorios['infectados']
-            print("El archivo subido tiene contenido malicioso")
+            print("El archivo subido está infectado")
         else:
             estado = 'Limpio'
             destino = directorios['limpios']
-            print("El archivo subido se ha subido correctamente")
-
+            print("El archivo se ha subido correctamente")
         # Mover el archivo a la carpeta adecuada.
-        shutil.move(ruta_completa, os.path.join(destino, archivo))
-
-        # Insertar información del archivo en la colección correspondiente en MongoDB.
+        shutil.move(archivo, os.path.join(destino, file))
         archivos_collection.insert_one({
             'nombre': archivo,
             'ubicacion': ruta_completa,
