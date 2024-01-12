@@ -1,5 +1,5 @@
-<?php
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+<?php 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Conexión a la base de datos (modifica según tus credenciales)
         $servername = "localhost";
         $username = "admin";

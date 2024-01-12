@@ -24,12 +24,12 @@ if (isset($_REQUEST['login'])) {
     $res = mysqli_stmt_get_result($stmt);
 
     if ($row = mysqli_fetch_assoc($res)) {
-        $_SESSION['valido'] = 1;
+        $_SESSION['id_usuario'] = 1;
         $_SESSION['nom'] = $_REQUEST['USER_NAME'];
         header("Location: ../index.html");
         exit; // Agrega un exit para evitar que el código siguiente se ejecute
     } else {
-        $_SESSION['valido'] = 0;
+        $_SESSION['id_usuario'] = 0;
         echo "<h1>Usuario erróneo o contraseña erróneos</h1>";
     }
 
