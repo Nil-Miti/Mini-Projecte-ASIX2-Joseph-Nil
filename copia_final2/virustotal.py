@@ -1,9 +1,9 @@
 from pymongo import MongoClient
-import os  # Importamos el módulo para trabajar con el sistema de archivos
-import hashlib  # Importamos el módulo para calcular el hash SHA-256
-import requests  # Importamos el módulo para realizar solicitudes HTTP
-import json  # Importamos el módulo para trabajar con datos JSON
-import shutil  # Importamos el módulo para operaciones de archivo (mover archivos)
+import os
+import hashlib
+import requests
+import json
+import shutil
 
 # Definir la ubicación del directorio de carga, la carpeta para archivos infectados y no infectados.
 directorios = {
@@ -14,7 +14,8 @@ directorios = {
 client = MongoClient('localhost', 27017)
 db = client['registros']
 archivos_collection = db['archivos']
-# Verificamos si el directorio de carga está vacío. 
+
+# Verificamos si el directorio de carga está vacío.
 # Si no hay archivos para procesar, se muestra un mensaje y el programa se cierra.
 if not os.listdir(directorios['carga']):
     print("La carpeta de carga está vacía. No hay archivos para procesar.")
@@ -30,7 +31,6 @@ def calcular_hash(archivo):
                 break
             sha256.update(datos)
     return sha256.hexdigest()
-
 # Función para enviar archivo a VirusTotal y obtener datos adicionales.
 def enviar_a_virustotal(archivo):
     api_key = '7d3b0c36cb6ffa9836bbe4069bd6f7f1c16e1b52f7f64fb2365eb8fdbd781343'
@@ -76,7 +76,7 @@ for root, dirs, files in os.walk(directorios['carga']):
 
         # Obtener el número de informes maliciosos
         num_maliciosos = obtener_numero_maliciosos(informe)
-        
+
         # Determinar si el archivo está infectado o limpio y moverlo
         if num_maliciosos > 1:
             estado = 'Infectado'
@@ -86,11 +86,14 @@ for root, dirs, files in os.walk(directorios['carga']):
             estado = 'Limpio'
             destino = directorios['limpios']
             print("El archivo se ha subido correctamente")
+
         # Mover el archivo a la carpeta adecuada.
         shutil.move(archivo, os.path.join(destino, file))
+
+        # Insertar información del archivo en la base de datos MongoDB
         archivos_collection.insert_one({
-            'nombre': archivo,
-            'ubicacion': ruta_completa,
+            'nombre': file,
+            'ubicacion': archivo,  # Puedes cambiar esto según lo que desees almacenar
             'hash': archivo_hash,
             'estado': estado,
             'alert_severity': informe.get('data', {}).get('attributes', {}).get('last_analysis_stats', {}).get('malicious', 0),
