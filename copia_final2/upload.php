@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if ((isset($_SESSION['valido'])) && ($_SESSION['valido'] == 1)) {
+if ((isset($_SESSION['id_usuario'])) && ($_SESSION['id_usuario'] == 1)) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $target_dir = "uploads/";  // Carpeta donde se guardarán los archivos
         $target_file = $target_dir . basename($_FILES["file"]["name"]);
         $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
         // ... (código de verificación existente)
 
