@@ -104,3 +104,22 @@ CREATE TABLE usuario (
      PASSW VARCHAR(255) NOT NULL,
     
      PRIMARY KEY (ID_USER));
+ALTER TABLE usuario
+   ADD COLUMN Carpeta INT;
+ALTER TABLE usuario
+   ADD COLUMN grupo INT;
+   
+#CREAR TABLA DE COMPARTIDOS:
+CREATE TABLE Compartidos (
+         id INT AUTO_INCREMENT PRIMARY KEY,
+         Carpeta VARCHAR(255)
+    );
+ALTER TABLE usuario ADD CONSTRAINT fk_Carpeta_Compartidos FOREIGN KEY (Carpeta) REFERENCES Compartidos(ID);
+
+#CREAR TABLA GRUPOS;
+CREATE TABLE grupos(
+  ID INT AUTO_INCREMENT PRIMARY KEY,
+  nombre varchar(255) NOT NULL,
+);
+ALTER TABLE usuario ADD CONSTRAINT fk_grupos FOREIGN KEY (grupo) REFERENCES grupos(ID);
+   
