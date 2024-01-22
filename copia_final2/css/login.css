@@ -4,40 +4,68 @@ body {
     margin: 0;
 }
 
-form {
-    border-radius: 10px;
-    padding: 40px;
-    text-align: center;
+.{
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
 }
 
-input {
-    width: 10%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccd6dd;
-    border-radius: 4px;
+.formulari {
+width: 200px;
+#background: #24303C;
+padding: 30px;
+margin: auto;
+margin-top: 100px;
+font-family: 'calibri';
+color: white;
 }
 
-button {
-    background-color: #1da1f2;
-    color: #ffffff;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 10%;
+.formulari h1 {
+	font-size: 22px;
+	margin-bottom: 20px;
+	font-family: 'calibri';
 }
 
-#usuari {
-    text-align: center;
-    font-size: 50%;
-
+.controls-form {
+width: 100%;
+#background-color: #24303C;
+padding:10px;
+border-radius: 4px;
+margin-bottom: 16px;
+border: 1px solid #1f53c5;	
+font-family: 'calibri';
+font-size: 18px;
+	
 }
 
-.crear {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.formulari p {
+	height: 40px;
+	text-align: center;
+	font-size: 18 px;
+	font-family: 'calibri';
+}
+
+.formulari a {
+	color: white;
+	text-decoration: none;
+	font-family: 'calibri';
+	font-size: 18px;
+}
+
+.formulari a:hover {
+	color: white;
+	text-decoration: underline;
+}
+
+.formulari .boton {
+	width:100%;
+	background: #1f53c5;
+	border: none;
+	padding: 12px;
+	color: white;
+	margin: 16px 0;
+	font-size: 16px;
+	font-family: 'calibri';
 }
 
 .imagen2 {
