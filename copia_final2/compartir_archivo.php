@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error al insertar el registro en la tabla Compartidos: " . $conn->error;
         }
     }
-    // Procesar la subida de archivos
+// Procesar la subida de archivos
     $uploadedFiles = [];
 
     foreach ($_FILES['archivos']['name'] as $key => $nombreArchivo) {
@@ -76,6 +76,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Ejecutar el script Python y pasar el título como argumento
+    $scriptPath = 'virustotal_compartir.py'; 
+       foreach ($uploadedFiles as $archivo) {
+        $command = "python3 $scriptPath $titulo $archivo";
+        shell_exec($command);
+    }
 
     // Puedes mostrar los archivos subidos (esto es solo un ejemplo)
     if (!empty($uploadedFiles)) {
@@ -83,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         foreach ($uploadedFiles as $archivo) {
             echo "<p>{$archivo}</p>";
         }
-}
+    }
     $conn->close();
 }
 ?>
