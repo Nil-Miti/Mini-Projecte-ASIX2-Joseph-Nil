@@ -1,89 +1,147 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #28a745; /* Cambiado a verde */
     margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #ffffff; /* Fondo blanco */
 }
 
-.{
-	margin:0;
-	padding:0;
-	box-sizing:border-box;
+#container {
+    display: flex;
 }
 
-.formulari {
-width: 200px;
-#background: #24303C;
-padding: 30px;
-margin: auto;
-margin-top: 100px;
-font-family: 'calibri';
-color: white;
+#logo-container {
+    width: 50%;
+    height: 100vh;
+    background-color: #f0f0f0; /* Puedes cambiar esto por el color que desees */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.formulari h1 {
-	font-size: 22px;
-	margin-bottom: 20px;
-	font-family: 'calibri';
+#logo {
+    max-width: 100%;
+    max-height: 100%;
 }
 
-.controls-form {
-width: 100%;
-#background-color: #24303C;
-padding:10px;
-border-radius: 4px;
-margin-bottom: 16px;
-border: 1px solid #1f53c5;	
-font-family: 'calibri';
-font-size: 18px;
-	
+#text-container {
+    width: 50%;
+    background-color: #ffffff; /* Fondo blanco */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.formulari p {
-	height: 40px;
-	text-align: center;
-	font-size: 18 px;
-	font-family: 'calibri';
+#titulo-principal {
+    font-size: 38px; /* Tamaño de la fuente */
+    font-weight: bold; /* Texto en negrita */
+    margin-bottom: 100px;
+    
 }
 
-.formulari a {
-	color: white;
-	text-decoration: none;
-	font-family: 'calibri';
-	font-size: 18px;
+#subtitle {
+    font-size: 15px; /* Tamaño de la fuente del subtítulo */
+    margin-bottom: 1px; /* Espacio inferior */
+    margin-top: 50px;
 }
 
-.formulari a:hover {
-	color: white;
-	text-decoration: underline;
+#button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.formulari .boton {
-	width:100%;
-	background: #1f53c5;
-	border: none;
-	padding: 12px;
-	color: white;
-	margin: 16px 0;
-	font-size: 16px;
-	font-family: 'calibri';
+.button {
+    padding: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 20px; /* Tamaño de la fuente de los botones */
+    border-radius: 10px; /* Ajusta según tus preferencias */
+    width: 200px; /* Ancho del botón rectangular */
+    text-align: center;
 }
 
-.imagen2 {
-    display: block;
-    margin: 0 auto;
-    margin-bottom: 10px; /* Modificado a 10px para reducir el espacio */
-    width: 50px; /* Tamaño de la imagen reducido */
+#create-account-btn {
+    background-color: #438349; /* Color del botón */
+    color: #ffffff; /* Color del texto */
 }
 
-.imagen {
-    display: block;
-    margin: 0 auto;
-    margin-top: 10px; /* Modificado a 10px para reducir el espacio */
-    width: 200px;
+#login-btn {
+    background-color: #ffffff; /* Color del botón */
+    color: #000000; /* Color del texto */
+    border: 1px solid #000000; /* Borde negro */
 }
 
-@media (max-width: 768px) {
-    .login-container {
-        width: 90%;
+/* Estilos de la caja modal */
+#create-account-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente oscuro */
+    justify-content: center;
+    align-items: center;
+}
+
+#close-btn {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.close-icon {
+    position: absolute;
+    right: 1124px;
+    bottom: 79%;
+}
+
+#modal-content {
+    background: #ffffff; /* Fondo blanco del contenido */
+    padding: 50px;
+    border-radius: 10px 10px 10px 10px; /* Bordes redondeados en la parte inferior */
+}
+
+.input-container {
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #438349; /* Color del botón */
+    color: #ffffff; /* Color del texto */
+    border: none;
+    border-radius: 10px; /* Bordes redondeados */
+    cursor: pointer;
+}
+
+#create-account-button {
+    background-color: #4CAF50; /* Fondo verde para el botón */
+}
+
+/* Animaciones */
+#create-account-modal.show-modal {
+    display: flex;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }
+
