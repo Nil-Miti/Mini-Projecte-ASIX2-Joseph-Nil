@@ -4,12 +4,10 @@ import hashlib
 import requests
 import shutil
 import sys
-
-titulo = sys.argv[1]
-
+carpeta = sys.argv[1]
 directorios = {
     'infectados': '/var/www/servidor/infectados/',
-    'limpios': f'/var/www/servidor/archivos_compartidos/{titulo}/'
+    'limpios': f'/var/www/servidor/archivos_compartidos/{carpeta}/'
 }
 client = MongoClient('localhost', 27017)
 db = client['registros']
