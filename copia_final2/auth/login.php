@@ -14,11 +14,15 @@ if (isset($_REQUEST['login'])) {
         die("Conexión errónea: " . mysqli_connect_error());
     }
 
-    $sql = "SELECT * FROM usuario WHERE USER_NAME = ? AND PASSW = ? AND email = ?";
+    $password = $_REQUEST['PASSW'];
+    $name = $_REQUEST['USER_NAME'];
+    $email = $_REQUEST['USER_NAME'];
+
+    $sql = "SELECT * FROM usuario WHERE (USER_NAME = '".$name."' OR email = '".$email."') AND PASSW = '".$password."'";
     $stmt = mysqli_prepare($conn, $sql);
 
     // Corrige el error aquí: cambia el punto por una coma
-    mysqli_stmt_bind_param($stmt, "ss", $_REQUEST['USER_NAME'], $_REQUEST['PASSW'], $_REQUEST['email']);
+    //mysqli_stmt_bind_param($stmt, "ss", $_REQUEST['USER_NAME'], $_REQUEST['PASSW']);
 
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
@@ -39,7 +43,7 @@ if (isset($_REQUEST['login'])) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tu Página</title>
     <link rel="stylesheet" href="../css/index.css">
@@ -61,70 +65,70 @@ if (isset($_REQUEST['login'])) {
         </div>
     </div>
 
-         <!-- Caja de Crear Cuenta -->
-            <div id="create-account-modal">
-                <div id="modal-content">
-                    <div id="close-btn" onclick="closeCreateAccountModal()"> <!-- Agregado el contenedor para la "x" -->
-                    <div class="close-icon">&#10006;</div>
-                    </div>  
-                    <h2>Crea tu cuenta</h2>
-                        <div class="input-container">
-                        <label for="username">Usuario</label>
-                        <input type="text" id="username" placeholder="Ingrese su usuario">
-                    </div>
-                    <div class="input-container">
-                        <label for="email">Correo</label>
-                        <input type="email" id="email" placeholder="Ingrese su correo">
-                    </div>
-                    <div class="input-container">
-<label for="password">Contraseña</label>
-                        <input type="password" id="password" placeholder="Ingrese su contraseña">
-                    </div>
-                    <button id="create-account-button" onclick="createAccount()">Crear un compte</button>
-                </div>
-            </div>
+	 <!-- Caja de Crear Cuenta -->
+	    <div id="create-account-modal">
+	        <div id="modal-content">
+	            <div id="close-btn" onclick="closeCreateAccountModal()"> <!-- Agregado el contenedor para la "x" -->
+	            <div class="close-icon">&#10006;</div>
+	            </div>  
+	            <h2>Crea tu cuenta</h2>
+	                <div class="input-container">
+	                <label for="username">Usuario</label>
+	                <input type="text" id="username" placeholder="Ingrese su usuario">
+	            </div>
+	            <div class="input-container">
+	                <label for="email">Correo</label>
+	                <input type="email" id="email" placeholder="Ingrese su correo">
+	            </div>
+	            <div class="input-container">
+	                <label for="password">Contraseña</label>
+	                <input type="password" id="password" placeholder="Ingrese su contraseña">
+	            </div>
+	            <button id="create-account-button" onclick="createAccount()">Crear un compte</button>
+	        </div>
+	    </div>
 
 
-        <!-- Caja de Inciar sessio -->
-        <form action="login.php" method="post">
-        <div id="login-modal">
-                <div id="caja-contenido">
-                    <div id="close-btn" onclick="closeCreateAccountModal()"> <!-- Agregado el contenedor para la "x" -->
-                    <div class="close-icon">&#10006;</div>
-                    </div>
-                    <h2>Inicia Sessio</h2>
-                        <div class="input-container">
-                        <label for="username">Usuario</label>
-                        <input type="text" id="USER_NAME" placeholder="Ingrese su user o su correo">
-                    </div>
-                    <div class="input-container">
-                        <label for="password">Contraseña</label>
-                        <input type="password" id="PASSW" placeholder="Ingrese su contraseña">
-                    </div>
-                    <button type="submit" name= "login" >Crear un compte</button>
-        </form>
-                </div>
-            </div>
+	<!-- Caja de Inciar sessio -->
+	<form action="login.php" method="post">
+	<div id="login-modal">
+	        <div id="caja-contenido">
+	            <div id="close-btn" onclick="closeCreateAccountModal()"> <!-- Agregado el contenedor para la "x" -->
+	            <div class="close-icon">&#10006;</div>
+	            </div>
+	            <h2>Inicia Sessio</h2>
+	                <div class="input-container">
+	                <label for="username">Usuario</label>
+	                <input type="text" name="USER_NAME" placeholder="Ingrese su user o su correo">
+	            </div>
+	            <div class="input-container">
+	                <label for="password">Contraseña</label>
+	                <input type="password" name="PASSW" placeholder="Ingrese su contraseña">
+	            </div>
+	            <button type="submit" name= "login" >Crear un compte</button>
+	</form>
+	        </div>
+	    </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-        const createAccountBtn = document.getElementById("create-account-btn");
-        const loginBtn = document.getElementById("login-btn");
-const createAccountModal = document.getElementById("create-account-modal");
-        const loginModal = document.getElementById("login-modal"); // Cambio aquí
-        const closeModalBtn = document.getElementById("close-btn");
+	const createAccountBtn = document.getElementById("create-account-btn");
+    	const loginBtn = document.getElementById("login-btn");
+    	const createAccountModal = document.getElementById("create-account-modal");
+    	const loginModal = document.getElementById("login-modal"); // Cambio aquí
+    	const closeModalBtn = document.getElementById("close-btn");
 
-        createAccountBtn.addEventListener("click", function () {
-                createAccountModal.classList.add("show-modal");
-        });
+    	createAccountBtn.addEventListener("click", function () {
+        	createAccountModal.classList.add("show-modal");
+    	});
 
-        loginBtn.addEventListener("click", function () {
-                loginModal.classList.add("show-modal"); // Cambio aquí
-        });
+    	loginBtn.addEventListener("click", function () {
+        	loginModal.classList.add("show-modal"); // Cambio aquí
+    	});
 
-        closeModalBtn.addEventListener("click", function () {
-                createAccountModal.classList.remove("show-modal");
-                loginModal.classList.remove("show-modal"); // Cambio aquí
-        });
+    	closeModalBtn.addEventListener("click", function () {
+        	createAccountModal.classList.remove("show-modal");
+        	loginModal.classList.remove("show-modal"); // Cambio aquí
+    	});
     });
     </script>
 
