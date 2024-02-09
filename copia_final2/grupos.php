@@ -1,13 +1,14 @@
 <?php
 session_start();
 
+// Verificar si el usuario está autenticado y tiene permisos
 if (!(isset($_SESSION['id_usuario']) && $_SESSION['id_usuario'] == 1)) {
-    // Redirige a la página de inicio de sesión o muestra un mensaje de error
+    // Redirigir a la página de inicio de sesión o mostrar un mensaje de error
     header("Location: /auth/login.php");
     exit();
 }
 
-// Conexión a la base de datos (modifica según tus credenciales)
+// Conexión a la base de datos (modificar según tus credenciales)
 $servername = "localhost";
 $username = "admin";
 $password = "1234";
@@ -15,35 +16,70 @@ $dbname = "server";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verifica la conexión
+// Verificar la conexión
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Obtiene el nombre del usuario desde la sesión
+// Obtener el nombre del usuario desde la sesión
 $usuario = $_SESSION['nom'];
 
-// Realiza una consulta para obtener el grupo del usuario
-$query = "SELECT GRUPO FROM usuario WHERE USER_NAME = '$usuario'";
-$result = $conn->query($query);
+// Consulta para obtener los grupos en los que está inscrito el usuario
+$sql = "SELECT g.ID_GRUPO, g.NOMBRE_GRUPO
+        FROM grupos g
+        INNER JOIN usuarioxgrupo ug ON g.ID_GRUPO = ug.ID_GRUPO
+        INNER JOIN usuario u ON ug.ID_USER = u.ID_USER
+        WHERE u.USER_NAME = '$usuario'";
 
-if ($result->num_rows == 1) {
-    $row = $result->fetch_assoc();
-    $id_grupo = $row['GRUPO'];
+$resultado = $conn->query($sql);
 
-    // Realiza una consulta para obtener el nombre del grupo
-    $query_grupo = "SELECT nombre FROM grupos WHERE ID = '$id_grupo'";
-    $result_grupo = $conn->query($query_grupo);
+if ($resultado->num_rows > 0) {
+    // Mostrar los grupos y permitir al usuario interactuar con ellos
+    while ($fila = $resultado->fetch_assoc()) {
+        $id_grupo = $fila['ID_GRUPO'];
+        $nombre_grupo = $fila['NOMBRE_GRUPO'];
+        echo "<h2>Grupo: $nombre_grupo</h2>";
 
-    if ($result_grupo->num_rows == 1) {
-        $row_grupo = $result_grupo->fetch_assoc();
-        $nombre_grupo = $row_grupo['nombre'];
+        // Directorio donde se guardarán los archivos del grupo
+        $ruta_grupo = "/var/www/servidor/grupos/$nombre_grupo/";
 
-        // Construye la ruta completa del directorio
-        $ruta_carpeta = "/var/www/servidor/grupos/$nombre_grupo/";
+        // Mostrar los archivos dentro del grupo
+        if (is_dir($ruta_grupo)) {
+            $archivos_grupo = scandir($ruta_grupo);
+            echo "<h3>Archivos del grupo:</h3>";
+            echo "<ul>";
+            foreach ($archivos_grupo as $archivo) {
+                if ($archivo != '.' && $archivo != '..') {
+                    // Agregar enlace de descarga para cada archivo
+                    echo "<li><a href='$ruta_grupo/$archivo' download>$archivo</a></li>";
+                }
+            }
+            echo "</ul>";
+        } else {
+            echo "No se encontraron archivos en el grupo.";
+        }
+    }
+    // Mostrar el formulario de subida de archivos
+    echo "<h3>Subir Archivo:</h3>";
+    echo "<form action='grupos.php' method='post' enctype='multipart/form-data'>";
+    echo "<select name='id_grupo'>";
+    // Rebobinar el puntero de resultados para volver a recorrer los grupos
+    mysqli_data_seek($resultado, 0);
+    while ($fila = $resultado->fetch_assoc()) {
+        $id_grupo = $fila['ID_GRUPO'];
+        $nombre_grupo = $fila['NOMBRE_GRUPO'];
+        echo "<option value='$nombre_grupo'>$nombre_grupo</option>";
+    }
+    echo "</select>";
+    echo "<input type='file' name='file[]'>";
+    echo "<input type='submit' value='Subir archivo' name='submit'>";
+    echo "</form>";
 
-        // Procesar la subida de archivos
-        $uploadsDirectory = $ruta_carpeta; // Se corrige la ruta para subir los archivos
+    // Procesar la subida de archivos
+    if (isset($_FILES['file'])) {
+        $nombre_grupo = $_POST['id_grupo'];
+        $ruta_grupo = "/var/www/servidor/grupos/$nombre_grupo/";
+        $uploadsDirectory = $ruta_grupo;
         $uploadedFiles = [];
 
         foreach ($_FILES['file']['tmp_name'] as $key => $tempFile) {
@@ -56,68 +92,14 @@ if ($result->num_rows == 1) {
         }
 
         $scriptPath = '/var/www/servidor/virustotal.py';
-       foreach ($uploadedFiles as $file) {
+        foreach ($uploadedFiles as $file) {
             $command = "python3 $scriptPath $nombre_grupo";
             shell_exec($command);
         }
-
-        // Obtiene la lista de archivos en el directorio
-        $archivos = scandir($ruta_carpeta);
-
-        // Muestra el nombre de la carpeta como un enlace
-        echo "<p><a href='javascript:void(0);' onclick='mostrarArchivos();'>$nombre_grupo</a></p>";
-
-        // Container para mostrar los archivos (inicialmente oculto)
-        echo "<div id='archivos-container' style='display: none;'>";
-
-        // Muestra la lista de archivos
-       echo "<ul>";
-	foreach ($archivos as $archivo) {
-    // Excluye los directorios "." y ".."
-    	if ($archivo != "." && $archivo != "..") {
-        // Crea un enlace de descarga para cada archivo
-        echo "<li><a href='descargar.php?archivo=$archivo&grupo=$nombre_grupo'>$archivo</a></li>";
-    }
-}
-echo "</ul>";
-
-        // Formulario para cargar archivos
-        echo "<form action='grupos.php' method='post' enctype='multipart/form-data'>";
-        echo "<label for='file'>Subir archivo:</label>";
-        echo "<input type='file' name='file[]' id='file' multiple>"; // Se cambia el nombre del input a 'file[]' para permitir múltiples archivos
-        echo "<input type='submit' value='Subir'>";
-        echo "</form>";
-
-        echo "</div>";
-    } else {
-        // El grupo no existe, maneja el error
-        echo "Error: Grupo no encontrado.";
     }
 } else {
-    // No se encontró el usuario, maneja el error
-    echo "Error: Usuario no encontrado.";
+    echo "El usuario no está inscrito en ningún grupo.";
 }
 
 $conn->close();
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/crear_user.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grupos</title>
-    <script>
-        function mostrarArchivos() {
-            var archivosContainer = document.getElementById("archivos-container");
-            archivosContainer.style.display = "block";
-        }
-    </script>
-</head>
-<body>
-
-<h2>Grupos</h2>
-
-</body>
-</html>
