@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Formulario Login</title>
+  <link rel="stylesheet" href="index.css"/>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos adicionales si es necesario */
+  </style>
+</head>
+<body>
+<header style="margin-left: 1244px;">
+  <img src="logo.png" class="logo">
+  <div class="botones">
+    <button><strong>Compartir</strong></button>
+    <button><strong>Mis archivos</strong></button>
+    <button><strong>Grupo</strong></button>
+    <button><strong>name user</strong></button>
+  </div>
+</header>
+<div class="formulari">
+  <section class="form-login">
+    <div class="capçalera" onclick="openFileSelector()">
+      <img src="icono suma.png" class="icono-suma">
+      <h1>Subir archivos</h1>
+      <p>Selecciona tu carpeta o archivos deseados</p>
+    </div>
+    <hr class="linea_separacion"/>
+    <div class="contenido">
+      <black>Enviar email a:</black>
+      <input class="caja" type="text" name="enviar email" value="" >
+      <hr/>
+      <black>Titulo:</black>
+      <input class="caja" type="text" name="titulo" value="" >
+      <hr/>
+      <black>Nombre de usuario:</black>
+      <input class="caja" type="text" name="nombre usuario" value="">
+      <hr/>
+      <input class="button1" type="submit" name="" value="enviar">
+      <input id="fileInput" class="button1" type="file" style="display: none;" onchange="handleFileSelect(event)">
+    </div>
+  </section>
+</div>
+
+<script>
+  function openFileSelector() {
+    document.getElementById('fileInput').click();
+  }
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    // Obtener el párrafo donde se mostrará el nombre del archivo
+    const paragraph = document.querySelector('.capçalera p');
+    // Mostrar el nombre del archivo seleccionado en el párrafo
+    paragraph.textContent = file.name;
+    // Aquí puedes agregar la lógica para manejar el archivo seleccionado
+    console.log('Archivo seleccionado:', file.name);
+  }
+</script>
+</body>
+</html>
+css:
+* {
+  margin-left: 23px;
+  border-radius: 20px;
+}
+
+body {
+   background-color: #438349;
+}
+
+.botones {
+  display: flex; /* Utiliza un diseño flexible para los botones */
+  background-color: white;
+  border-radius:8px ;
+  margin-top: 6%;
+  margin-right: 6%;
+  height: 40px;
+}
+
+.botones button {
+  background-color: white;
+}
+
+.capçalera{
+  padding-top: 28%;
+  width: 100px;
+  top: 10%;
+  cursor: pointer;
+}
+
+.formulari{
+ background-color: white;
+ margin-top: 10%;
+ margin-right: 82%;
+ padding-bottom: 4%;
+ padding-top: 1%;
+ position: absolute;
+}
+
+.contenido{
+  margin-left: -6%;
+  margin-right: 13%;
+  margin-top: 13%;
+}
+
+.button1 {
+  border: none;
+  left: 0%;
+  position: absolute;
+  top: 85%;
+  width: 82%;
+  height: 11%;
+  cursor: pointer;
+}
+
+
+.formulari input.caja {
+  border: none;
+}
+
+button{
+  border: 0;
+}
+
+.logo {
+  width: 4%; /* Tamaño deseado para la imagen del logo */
+  position: absolute;
+  left: -0%;
+}
+
+.icono-suma {
+  position: absolute;
+  width: 13%;
+  left: 0%;
+  top: 9%;
+}
+
+.linea_separacion{
+  margin-left: -9%;
+
+}
+
+p {
+  font-size: small;
+  position: absolute;
+  top: 11%;
+}
+
+h1{
+  position: absolute;
+  top: 1%;
+}
