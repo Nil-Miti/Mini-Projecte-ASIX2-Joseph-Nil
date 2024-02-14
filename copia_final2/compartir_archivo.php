@@ -49,26 +49,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mkdir($uploadsDirectory);
 
         // Inserta el nombre de la carpeta en la tabla Compartidos
-        $sqlInsert = "INSERT INTO Compartidos (Carpeta) VALUES ('$titulo')";
-        if ($conn->query($sqlInsert) === TRUE) {
-            $idCarpeta = $conn->insert_id; // Obtiene el ID de la carpeta recién insertada
+// Inserta el nombre de la carpeta en la tabla Compartidos
+$sqlInsert = "INSERT INTO Compartidos (Nombre_Carpeta) VALUES ('$titulo')";
+if ($conn->query($sqlInsert) === TRUE) {
+    $idCarpeta = $conn->insert_id; // Obtiene el ID de la carpeta recién insertada
 
-            // Actualiza la columna Carpeta en la tabla Usuario
-            $sqlUpdate = "UPDATE usuario SET Carpeta = '$idCarpeta' WHERE ID_USER = '$usuarioID'";
-            if ($conn->query($sqlUpdate) === TRUE) {
-                echo "Registro insertado y actualizado con éxito.";
-            } else {
-                echo "Error al actualizar la carpeta en la tabla Usuario: " . $conn->error;
-            }
-        } else {
-            echo "Error al insertar el registro en la tabla Compartidos: " . $conn->error;
-        }
+    // Inserta los valores en la tabla usuarioxcarpeta
+    $insertUserCarpeta = "INSERT INTO usuarioxcarpeta (ID_USER, ID_Carpeta) VALUES ('$usuarioID', '$idCarpeta')";
+    if ($conn->query($insertUserCarpeta) === TRUE) {
+        // Éxito al insertar la relación usuario-carpeta
+    } else {
+        echo "Error al insertar relación usuario-carpeta: " . $conn->error;
     }
+
+
+
 // Procesar la subida de archivos
     $uploadedFiles = [];
 
-    foreach ($_FILES['archivos']['name'] as $key => $nombreArchivo) {
-        $tempFile = $_FILES['archivos']['tmp_name'][$key];
+    foreach ($_FILES['file']['name'] as $key => $nombreArchivo) {
+        $tempFile = $_FILES['file']['tmp_name'][$key];
         $targetFile = $uploadsDirectory . basename($nombreArchivo);
 
         if (move_uploaded_file($tempFile, $targetFile)) {
@@ -92,31 +92,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $conn->close();
 }
+}
+}
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compartir Carpeta</title>
+  <meta charset="utf-8">
+  <title>Formulario Login</title>
 </head>
 <body>
-    <h2>Compartir Carpeta</h2>
+<header style="margin-left: 1244px;">
+  <img src="logo.png" class="logo">
+  <div class="botones">
+    <button><strong>Compartir</strong></button>
+    <button><strong>Mis archivos</strong></button>
+    <button><strong>Grupo</strong></button>
+    <button><strong>name user</strong></button>
+  </div>
+</header>
+<div class="formulari">
+<form action='compartir_archivo.php' method='post' enctype='multipart/form-data'>
+  <section class="form-login">
+    <input type="file" name = "file[]">
+      <img src="icono suma.png" class="icono-suma">      
+<h1>Subir archivos</h1>
+      <p>Selecciona tu carpeta o archivos deseados</p>
+    </div>
+    <hr class="linea_separacion"/>
+    <div class="contenido">
+      <black>Enviar email a:</black>
+      <input class="caja" type="text" id="email" name="email">
+      <hr/>
+      <black>Titulo:</black>
+      <input class="caja" type="text" name="titulo" id="titulo">
+      <hr/>
+      <black>Nombre de usuario:</black>
+      <input class="caja" type="text" name="usuario" id="usuario">
+      <hr/>
+      <input class="button1" type="submit" name="submit" value="enviar">
+      <input id="fileInput" class="button1" type="file" style="display: none;" onchange="handleFileSelect(event)">
+    </div>
+  </section>
+</form>
+</div>
 
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data">
-        <label for="email">Correo Electrónico:</label>
-        <input type="email" name="email" required><br>
+<script>
+  function openFileSelector() {
+    document.getElementById('fileInput').click();
+  }
 
-        <label for="titulo">Título (Nombre de la Carpeta):</label>
-        <input type="text" name="titulo" required><br>
-
-        <label for="usuario">Nombre de Usuario:</label>
-        <input type="text" name="usuario" required><br>
-
-        <label for="archivos">Subir Archivos:</label>
-        <input type="file" name="archivos[]" multiple><br>
-
-        <input type="submit" value="Compartir">
-    </form>
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    // Obtener el párrafo donde se mostrará el nombre del archivo
+    const paragraph = document.querySelector('.capçalera p');
+    // Mostrar el nombre del archivo seleccionado en el párrafo
+    paragraph.textContent = file.name;
+    // Aquí puedes agregar la lógica para manejar el archivo seleccionado
+    console.log('Archivo seleccionado:', file.name);
+  }
+</script>
 </body>
 </html>
