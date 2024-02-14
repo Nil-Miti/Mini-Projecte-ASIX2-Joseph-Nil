@@ -1,13 +1,125 @@
+<?php
+session_start();
+
+if (!(isset($_SESSION['id_usuario']) && $_SESSION['id_usuario'] == 1)) {
+    // Redirige a la página de inicio de sesión o muestra un mensaje de error
+    header("Location: /auth/login.php");
+    exit();
+}
+
+// Verifica si se ha enviado el formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Conexión a la base de datos (modifica según tus credenciales)
+    $servername = "localhost";
+    $username = "admin";
+    $password = "1234";
+    $dbname = "server";
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    if ($conn->connect_error) {
+        die("Conexión fallida: " . $conn->connect_error);
+    }
+
+    // Variable del usuario que ha iniciado sesión
+    $user = $_SESSION['nom'];
+
+    // Recibe los datos del formulario
+    $email = $_POST['email'];
+    $titulo = $_POST['titulo'];
+    $usuario = $_POST['usuario'];
+
+ $userQuery = "SELECT ID_USER FROM usuario WHERE USER_NAME = '$usuario'";
+    $result = $conn->query($userQuery);
+
+    if ($result->num_rows === 0) {
+        echo '<script>alert("El usuario no existe. Solicitud cancelada.");</script>';
+        header("Location: compartir_archivo.php");
+	exit();
+    }
+
+    // Obtiene el ID del usuario
+    $row = $result->fetch_assoc();
+    $usuarioID = $row['ID_USER'];
+
+    // Crea un directorio para la carpeta compartida
+    $uploadsDirectory = '/var/www/servidor/archivos_compartidos/' . $titulo . '/';
+
+    if (!is_dir($uploadsDirectory)) {
+        mkdir($uploadsDirectory);
+
+        // Inserta el nombre de la carpeta en la tabla Compartidos
+// Inserta el nombre de la carpeta en la tabla Compartidos
+$sqlInsert = "INSERT INTO Compartidos (Nombre_Carpeta) VALUES ('$titulo')";
+if ($conn->query($sqlInsert) === TRUE) {
+    $idCarpeta = $conn->insert_id; // Obtiene el ID de la carpeta recién insertada
+
+    // Inserta los valores en la tabla usuarioxcarpeta
+    $insertUserCarpeta = "INSERT INTO usuarioxcarpeta (ID_USER, ID_Carpeta) VALUES ('$usuarioID', '$idCarpeta')";
+    if ($conn->query($insertUserCarpeta) === TRUE) {
+        // Éxito al insertar la relación usuario-carpeta
+    } else {
+        echo "Error al insertar relación usuario-carpeta: " . $conn->error;
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      if (isset($_FILES['folderInput'])) {
+          $folderName = $_FILES['folderInput']['name'];
+          $tempFolder = $_FILES['folderInput']['tmp_name'];
+          $uploadsDirectory = '/path/to/uploaded/folders/' . $folderName . '/';
+          if (!is_dir($uploadsDirectory)) {
+              mkdir($uploadsDirectory, 0777, true);
+              if (move_uploaded_file($tempFolder, $uploadsDirectory)) {
+                  echo "La carpeta se ha subido con éxito.";
+                  // Realizar cualquier procesamiento adicional aquí
+              } else {
+                  echo "Error al subir la carpeta.";
+              }
+          } else {
+              echo "La carpeta ya existe.";
+          }
+      } else {
+          echo "No se ha recibido ninguna carpeta para subir."; 
+      }
+  }
+
+// Procesar la subida de archivos
+    $uploadedFiles = [];
+
+    foreach ($_FILES['file']['name'] as $key => $nombreArchivo) {
+        $tempFile = $_FILES['file']['tmp_name'][$key];
+        $targetFile = $uploadsDirectory . basename($nombreArchivo);
+
+        if (move_uploaded_file($tempFile, $targetFile)) {
+            $uploadedFiles[] = $targetFile;
+        }
+    }
+
+    // Ejecutar el script Python y pasar el título como argumento
+    $scriptPath = 'virustotal_compartir.py'; 
+       foreach ($uploadedFiles as $archivo) {
+        $command = "python3 $scriptPath $titulo $archivo";
+        shell_exec($command);
+    }
+
+    // Puedes mostrar los archivos subidos (esto es solo un ejemplo)
+    if (!empty($uploadedFiles)) {
+        echo "<p>Archivos subidos:</p>";
+        foreach ($uploadedFiles as $archivo) {
+            echo "<p>{$archivo}</p>";
+        }
+    }
+    $conn->close();
+}
+}
+}
+?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <title>Formulario Login</title>
+  <title>Subir Carpeta/Archivo</title>
   <link rel="stylesheet" href="index.css"/>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* Estilos adicionales si es necesario */
-  </style>
 </head>
 <body>
 <header style="margin-left: 1244px;">
@@ -20,135 +132,49 @@
   </div>
 </header>
 <div class="formulari">
+<div class="capçalera">
+<form id="uploadForm" method="post" enctype="multipart/form-data">
+  <input type="file" id="folderInput" webkitdirectory directory multiple>
+  <button type="submit"></button>
+</form>
+<form action='compartir_archivo.php' method='post' enctype='multipart/form-data'>
   <section class="form-login">
-    <div class="capçalera" onclick="openFileSelector()">
-      <img src="icono suma.png" class="icono-suma">
-      <h1>Subir archivos</h1>
-      <p>Selecciona tu carpeta o archivos deseados</p>
+    <input type="file" name = "file[]">
+      <img src="icono suma.png" class="icono-suma">      
     </div>
     <hr class="linea_separacion"/>
     <div class="contenido">
       <black>Enviar email a:</black>
-      <input class="caja" type="text" name="enviar email" value="" >
+      <input class="caja" type="text" id="email" name="email">
       <hr/>
       <black>Titulo:</black>
-      <input class="caja" type="text" name="titulo" value="" >
+      <input class="caja" type="text" name="titulo" id="titulo">
       <hr/>
       <black>Nombre de usuario:</black>
-      <input class="caja" type="text" name="nombre usuario" value="">
+      <input class="caja" type="text" name="usuario" id="usuario">
       <hr/>
-      <input class="button1" type="submit" name="" value="enviar">
-      <input id="fileInput" class="button1" type="file" style="display: none;" onchange="handleFileSelect(event)">
+      <input class="button1" type="submit" name="submit" value="Enviar">
     </div>
   </section>
+</form>
 </div>
 
-<script>
-  function openFileSelector() {
-    document.getElementById('fileInput').click();
-  }
 
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-    // Obtener el párrafo donde se mostrará el nombre del archivo
-    const paragraph = document.querySelector('.capçalera p');
-    // Mostrar el nombre del archivo seleccionado en el párrafo
-    paragraph.textContent = file.name;
-    // Aquí puedes agregar la lógica para manejar el archivo seleccionado
-    console.log('Archivo seleccionado:', file.name);
-  }
+<script>
+  document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    fetch('upload.php', {
+      method: 'POST',
+      body: formData
+    }).then(response => {
+      // Manejar la respuesta del servidor si es necesario
+    }).catch(error => {
+      console.error('Error en la solicitud:', error);
+    });
+  });
 </script>
+
+
 </body>
 </html>
-css:
-* {
-  margin-left: 23px;
-  border-radius: 20px;
-}
-
-body {
-   background-color: #438349;
-}
-
-.botones {
-  display: flex; /* Utiliza un diseño flexible para los botones */
-  background-color: white;
-  border-radius:8px ;
-  margin-top: 6%;
-  margin-right: 6%;
-  height: 40px;
-}
-
-.botones button {
-  background-color: white;
-}
-
-.capçalera{
-  padding-top: 28%;
-  width: 100px;
-  top: 10%;
-  cursor: pointer;
-}
-
-.formulari{
- background-color: white;
- margin-top: 10%;
- margin-right: 82%;
- padding-bottom: 4%;
- padding-top: 1%;
- position: absolute;
-}
-
-.contenido{
-  margin-left: -6%;
-  margin-right: 13%;
-  margin-top: 13%;
-}
-
-.button1 {
-  border: none;
-  left: 0%;
-  position: absolute;
-  top: 85%;
-  width: 82%;
-  height: 11%;
-  cursor: pointer;
-}
-
-
-.formulari input.caja {
-  border: none;
-}
-
-button{
-  border: 0;
-}
-
-.logo {
-  width: 4%; /* Tamaño deseado para la imagen del logo */
-  position: absolute;
-  left: -0%;
-}
-
-.icono-suma {
-  position: absolute;
-  width: 13%;
-  left: 0%;
-  top: 9%;
-}
-
-.linea_separacion{
-  margin-left: -9%;
-
-}
-
-p {
-  font-size: small;
-  position: absolute;
-  top: 11%;
-}
-
-h1{
-  position: absolute;
-  top: 1%;
-}
