@@ -29,13 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $titulo = $_POST['titulo'];
     $usuario = $_POST['usuario'];
 
- $userQuery = "SELECT ID_USER FROM usuario WHERE USER_NAME = '$usuario'";
+    $userQuery = "SELECT ID_USER FROM usuario WHERE USER_NAME = '$usuario'";
     $result = $conn->query($userQuery);
 
     if ($result->num_rows === 0) {
         echo '<script>alert("El usuario no existe. Solicitud cancelada.");</script>';
         header("Location: compartir_archivo.php");
-	exit();
+        exit();
     }
 
     // Obtiene el ID del usuario
@@ -49,23 +49,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mkdir($uploadsDirectory);
 
         // Inserta el nombre de la carpeta en la tabla Compartidos
-// Inserta el nombre de la carpeta en la tabla Compartidos
-$sqlInsert = "INSERT INTO Compartidos (Nombre_Carpeta) VALUES ('$titulo')";
-if ($conn->query($sqlInsert) === TRUE) {
-    $idCarpeta = $conn->insert_id; // Obtiene el ID de la carpeta recién insertada
+        $sqlInsert = "INSERT INTO  Compartidos (Nombre_Carpeta) VALUES ('$titulo')";
+        if ($conn->query($sqlInsert) === TRUE) {
+            $idCarpeta = $conn->insert_id; // Obtiene el ID de la carpeta recién insertada
 
-    // Inserta los valores en la tabla usuarioxcarpeta
-    $insertUserCarpeta = "INSERT INTO usuarioxcarpeta (ID_USER, ID_Carpeta) VALUES ('$usuarioID', '$idCarpeta')";
-    if ($conn->query($insertUserCarpeta) === TRUE) {
-        // Éxito al insertar la relación usuario-carpeta
+            // Inserta los valores en la tabla usuarioxcarpeta
+            $insertUserCarpeta = "INSERT INTO usuarioxcarpeta (ID_USER, ID_Carpeta) VALUES ('$usuarioID', '$idCarpeta')";
+            if ($conn->query($insertUserCarpeta) === TRUE) {
+                // Éxito al insertar la relación usuario-carpeta
+            } else {
+                echo "Error al insertar relación usuario-carpeta: " . $conn->error;
+            }
+
+            // Procesar la subida de carpetas si se proporciona
+            if (!empty($_FILES['folderInput'])) {
+                $tempFolder = $_FILES['folderInput']['tmp_name'];
+		echo $tempFolder;
+                $uploadsDirectory = '/var/www/servidor/archivos_compartidos/' . $titulo . '/';
+		echo $uploadsDirectory;
+                if (move_uploaded_file($tempFolder, $uploadsDirectory)) {
+                    echo "La carpeta se ha subido con éxito.";
+                    // Realizar cualquier procesamiento adicional aquí
+                } else {
+                    echo "Error al subir la carpeta.";
+                }
+            } else {
+                echo "No se ha recibido ninguna carpeta para subir.";
+            }
+
+            // Procesar la subida de archivos
+        } else {
+            echo "Error al insertar el nombre de la carpeta: " . $conn->error;
+        }
     } else {
-        echo "Error al insertar relación usuario-carpeta: " . $conn->error;
+        echo "La carpeta ya existe.";
     }
-
-
-
-// Procesar la subida de archivos
-    $uploadedFiles = [];
+$uploadedFiles = [];
 
     foreach ($_FILES['file']['name'] as $key => $nombreArchivo) {
         $tempFile = $_FILES['file']['tmp_name'][$key];
@@ -90,16 +109,16 @@ if ($conn->query($sqlInsert) === TRUE) {
             echo "<p>{$archivo}</p>";
         }
     }
+
     $conn->close();
-}
-}
 }
 ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <title>Formulario Login</title>
+  <title>Subir Carpeta/Archivo</title>
+  <link rel="stylesheet" href="index.css"/>
 </head>
 <body>
 <header style="margin-left: 1244px;">
@@ -112,13 +131,14 @@ if ($conn->query($sqlInsert) === TRUE) {
   </div>
 </header>
 <div class="formulari">
+<div class="capçalera">
+  <button type="submit"></button>
 <form action='compartir_archivo.php' method='post' enctype='multipart/form-data'>
   <section class="form-login">
     <input type="file" name = "file[]">
-      <img src="icono suma.png" class="icono-suma">      
-<h1>Subir archivos</h1>
-      <p>Selecciona tu carpeta o archivos deseados</p>
+      <img src="icono suma.png" class="icono-suma">
     </div>
+  <input type="file" id="folderInput" name="folderInput" webkitdirectory directory multiple>
     <hr class="linea_separacion"/>
     <div class="contenido">
       <black>Enviar email a:</black>
@@ -130,27 +150,26 @@ if ($conn->query($sqlInsert) === TRUE) {
       <black>Nombre de usuario:</black>
       <input class="caja" type="text" name="usuario" id="usuario">
       <hr/>
-      <input class="button1" type="submit" name="submit" value="enviar">
-      <input id="fileInput" class="button1" type="file" style="display: none;" onchange="handleFileSelect(event)">
+      <input class="button1" type="submit" name="submit" value="Enviar">
     </div>
   </section>
 </form>
 </div>
 
-<script>
-  function openFileSelector() {
-    document.getElementById('fileInput').click();
-  }
 
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-    // Obtener el párrafo donde se mostrará el nombre del archivo
-    const paragraph = document.querySelector('.capçalera p');
-    // Mostrar el nombre del archivo seleccionado en el párrafo
-    paragraph.textContent = file.name;
-    // Aquí puedes agregar la lógica para manejar el archivo seleccionado
-    console.log('Archivo seleccionado:', file.name);
-  }
+<script>
+  document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    fetch('upload.php', {
+      method: 'POST',
+      body: formData
+    }).then(response => {
+      // Manejar la respuesta del servidor si es necesario
+    }).catch(error => {
+      console.error('Error en la solicitud:', error);
+    });
+  });
 </script>
 </body>
 </html>
