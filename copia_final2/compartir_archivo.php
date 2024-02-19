@@ -62,28 +62,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             // Procesar la subida de carpetas si se proporciona
-            if (!empty($_FILES['folderInput'])) {
-                $tempFolder = $_FILES['folderInput']['tmp_name'];
-		echo $tempFolder;
+            foreach ($_FILES['folderInput']['name'] as $key => $nombreCarpeta) {
+		$tempFolder = $_FILES['folderInput']['tmp_name'][$key];
                 $uploadsDirectory = '/var/www/servidor/archivos_compartidos/' . $titulo . '/';
-		echo $uploadsDirectory;
-                if (move_uploaded_file($tempFolder, $uploadsDirectory)) {
-                    echo "La carpeta se ha subido con éxito.";
+		$uploadsDirectory;
+		$targetFolder = $uploadsDirectory . basename($nombreCarpeta);
+                if (move_uploaded_file($tempFolder, $targetFolder)) {
+			$uploadedFiles[] = $targetFolder;
+                echo "La carpeta se ha subido con éxito.";
                     // Realizar cualquier procesamiento adicional aquí
                 } else {
                     echo "Error al subir la carpeta.";
-                }
-            } else {
-                echo "No se ha recibido ninguna carpeta para subir.";
-            }
-
-            // Procesar la subida de archivos
-        } else {
-            echo "Error al insertar el nombre de la carpeta: " . $conn->error;
-        }
-    } else {
-        echo "La carpeta ya existe.";
     }
+}
+}
+}
 $uploadedFiles = [];
 
     foreach ($_FILES['file']['name'] as $key => $nombreArchivo) {
@@ -138,7 +131,7 @@ $uploadedFiles = [];
     <input type="file" name = "file[]">
       <img src="icono suma.png" class="icono-suma">
     </div>
-  <input type="file" id="folderInput" name="folderInput" webkitdirectory directory multiple>
+  <input type="file" id="folderInput" name="folderInput[]" webkitdirectory directory multiple>
     <hr class="linea_separacion"/>
     <div class="contenido">
       <black>Enviar email a:</black>
