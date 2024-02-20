@@ -60,52 +60,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "Error al insertar relación usuario-carpeta: " . $conn->error;
             }
-
-            // Procesar la subida de carpetas si se proporciona
-            foreach ($_FILES['folderInput']['name'] as $key => $nombreCarpeta) {
-		$tempFolder = $_FILES['folderInput']['tmp_name'][$key];
-                $uploadsDirectory = '/var/www/servidor/archivos_compartidos/' . $titulo . '/';
-		$uploadsDirectory;
-		$targetFolder = $uploadsDirectory . basename($nombreCarpeta);
-                if (move_uploaded_file($tempFolder, $targetFolder)) {
-			$uploadedFiles[] = $targetFolder;
-                echo "La carpeta se ha subido con éxito.";
-                    // Realizar cualquier procesamiento adicional aquí
-                } else {
-                    echo "Error al subir la carpeta.";
-    }
-}
-}
-}
-$uploadedFiles = [];
-
-    foreach ($_FILES['file']['name'] as $key => $nombreArchivo) {
-        $tempFile = $_FILES['file']['tmp_name'][$key];
-        $targetFile = $uploadsDirectory . basename($nombreArchivo);
-
-        if (move_uploaded_file($tempFile, $targetFile)) {
-            $uploadedFiles[] = $targetFile;
         }
     }
 
-    // Ejecutar el script Python y pasar el título como argumento
-    $scriptPath = 'virustotal_compartir.py'; 
-       foreach ($uploadedFiles as $archivo) {
-        $command = "python3 $scriptPath $titulo $archivo";
+    // Procesar la subida de carpetas si se proporciona
+    if (!empty($_FILES['folderInput']['name'])) {
+        $tempFolder = $_FILES['folderInput']['tmp_name'][0];
+        $targetFolder = $uploadsDirectory . basename($_FILES['folderInput']['name'][0]);
+
+        if (move_uploaded_file($tempFolder, $targetFolder)) {
+            echo "La carpeta se ha subido con éxito.";
+            $command = "python3 virustotal_compartir.py $titulo";
+            shell_exec($command);
+        } 
+    }
+
+    // Procesar la subida de archivos si se proporciona
+    if (!empty($_FILES['file']['name'])) {
+        foreach ($_FILES['file']['name'] as $key => $nombreArchivo) {
+            $tempFile = $_FILES['file']['tmp_name'][$key];
+            $targetFile = $uploadsDirectory . basename($nombreArchivo);
+
+            if (move_uploaded_file($tempFile, $targetFile)) {
+	echo "La archivo se ha subido con exito";            
+} 
+        }
+
+        // Ejecutar el script Python y pasar el título como argumento
+        $command = "python3 virustotal_compartir.py $titulo";
         shell_exec($command);
-    }
-
-    // Puedes mostrar los archivos subidos (esto es solo un ejemplo)
-    if (!empty($uploadedFiles)) {
-        echo "<p>Archivos subidos:</p>";
-        foreach ($uploadedFiles as $archivo) {
-            echo "<p>{$archivo}</p>";
-        }
     }
 
     $conn->close();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
