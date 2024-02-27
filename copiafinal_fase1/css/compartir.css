@@ -1,0 +1,92 @@
+*
+{
+  margin-left: 23px;
+  border-radius: 20px;
+}
+
+body {
+   background-color: #438349;
+}
+
+.botones {
+  display: flex; /* Utiliza un diseño flexible para los botones */
+  background-color: white;
+  border-radius:8px ;
+  margin-top: 6%;
+  margin-right: 6%;
+  height: 40px;
+}
+
+.botones button {
+  background-color: white;
+}
+
+.capçalera{
+  padding-top: 28%;
+  width: 100px;
+  top: 10%;
+  cursor: pointer;
+}
+
+.formulari{
+ background-color: white;
+ margin-top: 10%;
+ margin-right: 82%;
+ padding-bottom: 4%;
+ padding-top: 1%;
+ position: absolute;
+}
+
+.contenido{
+  margin-left: -6%;
+  margin-right: 13%;
+  margin-top: 13%;
+}
+
+.button1 {
+  border: none;
+  left: 0%;
+  position: absolute;
+  top: 85%;
+  width: 82%;
+  height: 11%;
+  cursor: pointer;
+}
+
+
+.formulari input.caja {
+  border: none;
+}
+
+button{
+  border: 0;
+}
+
+.logo {
+  width: 4%; /* Tamaño deseado para la imagen del logo */
+  position: absolute;
+  left: -0%;
+}
+
+.icono-suma {
+  position: absolute;
+  width: 13%;
+  left: 0%;
+  top: 9%;
+}
+
+.linea_separacion{
+  margin-left: -9%;
+
+}
+
+p {
+  font-size: small;
+  position: absolute;
+  top: 11%;
+}
+
+h1{
+  position: absolute;
+  top: 1%;
+}
