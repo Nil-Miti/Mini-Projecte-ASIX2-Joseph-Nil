@@ -87,53 +87,53 @@ systemctl start mongod
 
 #CREAR BASE DE DATOS EN MARIADB
 
-sudo mysql <<EOF
+sudo mariadb
 
 USE mysql;
-
 CREATE DATABASE IF NOT EXISTS server;
 
 USE server;
 
-CREATE TABLE usuario (
- 
+#CREAR TABLA Usuario
+
+CREATE TABLE usuario ( 
     ID_USER INT AUTO_INCREMENT,
-    
-    USER_NAME VARCHAR(50) NOT NULL,
-    
+    USER_NAME VARCHAR(50) NOT NULL,  
      PASSW VARCHAR(255) NOT NULL,
-    
+     email VARCHAR(255),
+     estado ENUM('autorizado','no_autorizado','espera') DEFAULT espera,
      PRIMARY KEY (ID_USER));
-
-ALTER TABLE usuario
-
-   ADD COLUMN Carpeta INT;
-
-ALTER TABLE usuario
-
-   ADD COLUMN grupo INT;
-   
+     
 #CREAR TABLA DE COMPARTIDOS:
 
 CREATE TABLE Compartidos (
-
-         id INT AUTO_INCREMENT PRIMARY KEY,
-         
-         Carpeta VARCHAR(255)
-         
-    );
+         IS_Carpeta INT AUTO_INCREMENT PRIMARY KEY,
+         Nombre_Carpeta VARCHAR(50));
     
-ALTER TABLE usuario ADD CONSTRAINT fk_Carpeta_Compartidos FOREIGN KEY (Carpeta) REFERENCES Compartidos(ID);
-
 #CREAR TABLA GRUPOS;
 
 CREATE TABLE grupos(
+  ID_GRUPO INT AUTO_INCREMENT PRIMARY KEY,  
+  NOMBRE_GRUPO varchar(50) NOT NULL);
 
-  ID INT AUTO_INCREMENT PRIMARY KEY,
-  
-  nombre varchar(255) NOT NULL,
+ #CREAR TABLA DE RELACION DE USUARIO POR GRUPO
 
-);
+ CREATE TABLE usuarioxgrupo (
+    ID_REGISTRO int(11) NOT NULL AUTO_INCREMENT,
+    ID_USER int(11),
+    ID_GRUPO int(11),
+    PRIMARY KEY (ID_REGISTRO),
+    FOREIGN KEY (ID_USER) REFERENCES usuario(ID_USER),
+    FOREIGN KEY (ID_GRUPO) REFERENCES grupos(ID_GRUPO));
 
-ALTER TABLE usuario ADD CONSTRAINT fk_grupos FOREIGN KEY (grupo) REFERENCES grupos(ID);
+#CREAR TABLA DE RELACION USUARIO POR CARPETA COMPARTIDA
+
+CREATE TABLE usuarioxcarpeta (
+    ID_REGISTRO int(11) NOT NULL AUTO_INCREMENT,
+    ID_USER int(11),
+    ID_GRUPO int(11),
+    PRIMARY KEY (ID_REGISTRO),
+    FOREIGN KEY (ID_USER) REFERENCES usuario(ID_USER),
+    FOREIGN KEY (ID_Carpeta) REFERENCES Compartidos(ID_Carpeta));
+
    
