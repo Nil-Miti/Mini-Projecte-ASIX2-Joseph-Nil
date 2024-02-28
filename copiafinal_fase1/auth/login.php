@@ -18,23 +18,29 @@ if (isset($_REQUEST['login'])) {
     $name = $_REQUEST['USER_NAME'];
     $email = $_REQUEST['USER_NAME'];
 
-    $sql = "SELECT * FROM usuario WHERE (USER_NAME = '".$name."' OR email = '".$email."') AND PASSW = '".$password."'";
-    $stmt = mysqli_prepare($conn, $sql);
+    $sql = "SELECT * FROM usuario WHERE (USER_NAME = '".$name."' OR email = '".$email."') AND PASSW = '".$password."' AND estado = 'autorizado'";
+ $result = mysqli_query($conn, $sql);
 
-    // Corrige el error aquí: cambia el punto por una coma
-    //mysqli_stmt_bind_param($stmt, "ss", $_REQUEST['USER_NAME'], $_REQUEST['PASSW']);
-
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-
-    if ($row = mysqli_fetch_assoc($res)) {
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
         $_SESSION['id_usuario'] = 1;
-        $_SESSION['nom'] = $_REQUEST['USER_NAME'];
+        $_SESSION['nom'] = $name;
         header("Location: ../index.html");
-        exit; // Agrega un exit para evitar que el código siguiente se ejecute
+        exit;
     } else {
-        $_SESSION['id_usuario'] = 0;
-        echo "<h1>Usuario erróneo o contraseña erróneos</h1>";
+        $sql_pending = "SELECT * FROM usuario WHERE (USER_NAME = '".$name."' OR email = '".$email."') AND PASSW = '".$password."' AND estado != 'autorizado'";
+        $result_pending = mysqli_query($conn, $sql_pending);
+
+        if ($result_pending && mysqli_num_rows($result_pending) > 0) {
+            $row_pending = mysqli_fetch_assoc($result_pending);
+            if ($row_pending['estado'] == 'espera') {
+                echo "<h1>Tu cuenta aún no ha sido autorizada. Por favor, espera a que un administrador apruebe tu cuenta.</h1>";
+            } elseif ($row_pending['estado'] == 'no_autorizado') {
+                echo "<h1>Tu cuenta ha sido rechazada. Por favor, ponte en contacto con el soporte para obtener más información.</h1>";
+            }
+        } else {
+            echo "<h1>Usuario erróneo o contraseña incorrecta</h1>";
+        }
     }
 
     mysqli_close($conn);
