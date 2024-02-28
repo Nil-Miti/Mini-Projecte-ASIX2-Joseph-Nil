@@ -112,16 +112,16 @@ USE server;
      
 #CREAR TABLA DE COMPARTIDOS:
 
-CREATE TABLE Compartidos (
+        CREATE TABLE Compartidos (
 
-         IS_Carpeta INT AUTO_INCREMENT PRIMARY KEY,
+         ID_Carpeta INT AUTO_INCREMENT PRIMARY KEY,
          
          Nombre_Carpeta VARCHAR(50));
     
 #CREAR TABLA GRUPOS;
 
 
-CREATE TABLE grupos(
+  CREATE TABLE grupos(
 
   ID_GRUPO INT AUTO_INCREMENT PRIMARY KEY,  
   
@@ -129,7 +129,7 @@ CREATE TABLE grupos(
 
  #CREAR TABLA DE RELACION DE USUARIO POR GRUPO
 
- CREATE TABLE usuarioxgrupo (
+    CREATE TABLE usuarioxgrupo (
  
     ID_REGISTRO int(11) NOT NULL AUTO_INCREMENT,
     
@@ -145,7 +145,7 @@ CREATE TABLE grupos(
 
 #CREAR TABLA DE RELACION USUARIO POR CARPETA COMPARTIDA
 
-CREATE TABLE usuarioxcarpeta (
+    CREATE TABLE usuarioxcarpeta (
 
     ID_REGISTRO int(11) NOT NULL AUTO_INCREMENT,
     
