@@ -7,83 +7,85 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
 
 # Hemos utilizado los siguientes comandos para instalar y configurar el servicio apache:
 
-sudo apt install apache2
-
-sudo apt update
-
-sudo apt install php
-
-sudo ufw allow 'Apache'
-
-sudo systemctl start apache2
-
-sudo snap install curl
-
-curl -4 icanhazip.com
+  sudo apt install apache2
+  
+  sudo apt update
+  
+  sudo apt install php
+  
+  sudo ufw allow 'Apache'
+  
+  sudo systemctl start apache2
+  
+  sudo snap install curl
+  
+  curl -4 icanhazip.com
 
 #CREAR UN FICHERO EN sites-aviable y configurarlo:
 
-<VirtualHost *:80>    
+  <VirtualHost *:80>    
+  
+  ServerAdmin webmaster@localhost
+  
+  ServerName servidor
+  
+  ServerAlias www.servidor
+  
+  DocumentRoot /var/www/servidor
+  
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+  
+  </VirtualHost>
 
-ServerAdmin webmaster@localhost
+#Comandos para arrancar la configuración anterior.
 
-ServerName servidor
-
-ServerAlias www.servidor
-
-DocumentRoot /var/www/servidor
-
-ErrorLog ${APACHE_LOG_DIR}/error.log
-
-CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-</VirtualHost>
-
-sudo a2ensite servidor.conf
-
-sudo a2dissite 000-default.conf
-
-sudo systemctl restart apache2
+ sudo a2ensite servidor.conf
+ 
+ sudo a2dissite 000-default.conf
+ 
+ sudo systemctl restart apache2
 
 # Instalar MARIADB Y MONGODB
 
-apt update
-
-apt install mariadb-server -y
-
-apt update
-
-#Tras la instalación, procedemos a habilitar el servicio al arranque y lo iniciamos:
-
-systemctl start mariadb.service
+  apt update
+  
+  apt install mariadb-server -y
+  
+  apt update
+  
+  #Tras la instalación, procedemos a habilitar el servicio al arranque y lo iniciamos:
+  
+  systemctl start mariadb.service
  
 #Instalar gnupg2
 
-apt install gnupg2 -y
+  apt install gnupg2 -y
 
 #Descargar la clave pública de MongoDB
 
-wget -nc https://www.mongodb.org/static/pgp/server-6.0.asc
+  wget -nc https://www.mongodb.org/static/pgp/server-6.0.asc
 
 #Agregar la clave pública al keyring de apt
 
-cat server-6.0.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/mongodb.gpg >/dev/null
+  cat server-6.0.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/mongodb.gpg >/dev/null
 
 #Agregar el repositorio de MongoDB al sources.list.d
 
-echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/trusted.gpg.d/mongodb.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongo.list
+  echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/trusted.gpg.d/mongodb.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongo.list
 
 #Actualizar la lista de paquetes
 
-apt update
+  apt update
 
 #Instalar MongoDB
 
-apt install mongodb-org -y
+  apt install mongodb-org -y
 
 #Iniciar el servicio de MongoDB
 
-systemctl start mongod
+  systemctl start mongod
 
 #CREAR BASE DE DATOS EN MARIADB
 
@@ -120,11 +122,11 @@ USE server;
     
 #CREAR TABLA GRUPOS;
 
-  CREATE TABLE grupos(
+     CREATE TABLE grupos(
 
-  ID_GRUPO INT AUTO_INCREMENT PRIMARY KEY,  
+     ID_GRUPO INT AUTO_INCREMENT PRIMARY KEY,  
   
-  NOMBRE_GRUPO varchar(50) NOT NULL);
+     NOMBRE_GRUPO varchar(50) NOT NULL);
 
  #CREAR TABLA DE RELACION DE USUARIO POR GRUPO
 
