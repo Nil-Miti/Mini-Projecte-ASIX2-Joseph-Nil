@@ -96,7 +96,7 @@ USE server;
 
 #CREAR TABLA Usuario
 
-CREATE TABLE usuario ( 
+    CREATE TABLE usuario ( 
 
     ID_USER INT AUTO_INCREMENT,
     
