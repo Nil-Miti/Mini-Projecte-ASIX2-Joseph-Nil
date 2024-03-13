@@ -76,7 +76,7 @@ button{
 }
 
 .linea_separacion{
-  margin-left: -9%;
+  margin-left: -0%;
 
 }
 
@@ -89,4 +89,9 @@ p {
 h1{
   position: absolute;
   top: 1%;
+}
+
+hr.hr {
+  margin-right: -14%;
+  margin-left: 6%;
 }
