@@ -24,6 +24,9 @@ if ($conn->connect_error) {
 // Obtener el nombre del usuario desde la sesión
 $usuario = $_SESSION['nom'];
 
+// Variable para almacenar el contenido que se mostrará en el div
+$contenido = '';
+
 // Consulta para obtener los grupos en los que está inscrito el usuario
 $sql = "SELECT g.ID_Carpeta, g.Nombre_Carpeta
         FROM Compartidos g
@@ -32,6 +35,29 @@ $sql = "SELECT g.ID_Carpeta, g.Nombre_Carpeta
         WHERE u.USER_NAME = '$usuario'";
 
 $resultado = $conn->query($sql);
+
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Título de la página</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="mis_archivos.css">
+</head>
+<body>
+<header>
+  <img src="logo.png" class="logo">
+  <div class="botones">
+    <button><strong><a href="compartir_archivo.php">Compartir</strong></button></a>
+    <button><strong><a href="mis_archivos.php">Mis archivos</strong></button></a>
+    <button><strong><a href="Grupos.php">Grupo</strong></button></a>
+    <button><strong><?php echo $_SESSION['nom']?></strong></button>
+  </div>
+</header>
+
+<hr class="linea_separacion">
+<?php 
 
 if ($resultado->num_rows > 0) {
     // Mostrar los grupos y permitir al usuario interactuar con ellos
@@ -56,9 +82,11 @@ if ($resultado->num_rows > 0) {
             }
             echo "</ul>";
         } else {
-            echo "No se encontraron archivos en tu carpeta.";
+            echo "<p>No se encontraron archivos en tu carpeta.</p>";
         }
     }
-$conn->close();
-}
-?>
+    $conn->close();
+}?>
+
+</body>
+</html>
