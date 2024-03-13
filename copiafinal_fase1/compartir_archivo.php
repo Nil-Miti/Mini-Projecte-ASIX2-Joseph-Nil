@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    if ($conn->connect_error) {
+if ($conn->connect_error) {
         die("Conexión fallida: " . $conn->connect_error);
     }
 
@@ -93,8 +93,6 @@ $command = "python3 virustotal_compartir.py $titulo $user";
         $command = "python3 virustotal_compartir.py $titulo $user";
         shell_exec($command);
     }
-
-    $conn->close();
 }
 ?>
 
@@ -103,15 +101,15 @@ $command = "python3 virustotal_compartir.py $titulo $user";
 <head>
   <meta charset="utf-8">
   <title>Subir Carpeta/Archivo</title>
-  <link rel="stylesheet" href="index.css"/>
+  <link rel="stylesheet" href="compartir_archivo.css"/>
 </head>
 <body>
 <header style="margin-left: 1244px;">
   <img src="logo.png" class="logo">
   <div class="botones">
-    <button><strong>Compartir</strong></button>
-    <button><strong>Mis archivos</strong></button>
-    <button><strong>Grupo</strong></button>
+    <button><strong><a href="compartir_archivo.php">Compartir</strong></button></a>
+    <button><strong><a href="mis_archivos.php">Mis archivos</strong></button></a>
+    <button><strong><a href="Grupos.php">Grupo</strong></button></a>
     <button><strong><?php echo $_SESSION['nom']?></strong></button>
   </div>
 </header>
@@ -120,21 +118,21 @@ $command = "python3 virustotal_compartir.py $titulo $user";
   <button type="submit"></button>
 <form action='compartir_archivo.php' method='post' enctype='multipart/form-data'>
   <section class="form-login">
-    <input type="file" name = "file[]">
       <img src="icono suma.png" class="icono-suma">
     </div>
+    <input type="file" name = "file[]">
   <input type="file" id="folderInput" name="folderInput[]" webkitdirectory directory multiple>
     <hr class="linea_separacion"/>
     <div class="contenido">
       <black>Enviar email a:</black>
       <input class="caja" type="text" id="email" name="email">
-      <hr/>
+      <hr class="hr"/>
       <black>Titulo:</black>
       <input class="caja" type="text" name="titulo" id="titulo">
-      <hr/>
+      <hr class="hr"/>
       <black>Nombre de usuario:</black>
       <input class="caja" type="text" name="usuario" id="usuario">
-      <hr/>
+      <hr class="hr"/>
       <input class="button1" type="submit" name="submit" value="Enviar">
     </div>
   </section>
