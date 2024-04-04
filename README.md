@@ -108,7 +108,7 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
      
      email VARCHAR(255),
      
-     estado ENUM('autorizado','no_autorizado','espera') DEFAULT espera,
+     estado ENUM('autorizado','no_autorizado','espera') DEFAULT 'espera',
      
      PRIMARY KEY (ID_USER));
      
@@ -153,6 +153,8 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
     ID_USER int(11),
     
     ID_GRUPO int(11),
+    
+    ID_Carpeta int(11),
     
     PRIMARY KEY (ID_REGISTRO),
     
