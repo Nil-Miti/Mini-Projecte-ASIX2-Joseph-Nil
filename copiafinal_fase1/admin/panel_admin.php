@@ -8,6 +8,7 @@ if (!(isset($_SESSION['id_usuario']) && ($_SESSION['nom'] == 'joseph' || $_SESSI
     exit();
 }
 
+
 // Conexión a la base de datos (modificar según tus credenciales)
 $servername = "localhost";
 $username = "admin";
@@ -20,56 +21,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
-
-// Procesar el formulario
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user_id = $_POST['user_id'];
-    $departamento = $_POST['departamento'];
-
-    if (isset($_POST['accept'])) {
-        $estado = 'autorizado';
-    } elseif (isset($_POST['reject'])) {
-        $estado = 'no_autorizado';
-    }
-
-    // Actualizar el estado del usuario en la tabla usuario
-    $sql_usuario = "UPDATE usuario SET estado = '$estado' WHERE ID_USER = $user_id";
-    if ($conn->query($sql_usuario) === TRUE) {
-        echo "Estado actualizado exitosamente";
-    } else {
-        echo "Error al actualizar el estado: " . $conn->error;
-    }
-
-    // Obtener el ID del grupo seleccionado
-    $sql_grupo = "SELECT ID_GRUPO FROM grupos WHERE NOMBRE_GRUPO = '$departamento'";
-    $result_grupo = $conn->query($sql_grupo);
-    if ($result_grupo->num_rows > 0) {
-        $row_grupo = $result_grupo->fetch_assoc();
-        $grupo_id = $row_grupo['ID_GRUPO'];
-
-        // Verificar si ya existe una relación usuario-grupo en la tabla usuarioxgrupo
-        $sql_relacion = "SELECT * FROM usuarioxgrupo WHERE ID_USER = $user_id";
-        $result_relacion = $conn->query($sql_relacion);
-
-        if ($result_relacion->num_rows > 0) {
-            // Actualizar la relación usuario-grupo en la tabla usuarioxgrupo
-            $sql_actualizar_relacion = "UPDATE usuarioxgrupo SET ID_GRUPO = $grupo_id WHERE ID_USER = $user_id";
-            if ($conn->query($sql_actualizar_relacion) === TRUE) {
-                echo "Relación usuario-grupo actualizada exitosamente";
-            } else {
-                echo "Error al actualizar la relación usuario-grupo: " . $conn->error;
-            }
-        } else {
-            // Insertar una nueva relación usuario-grupo en la tabla usuarioxgrupo
-            $sql_insertar_relacion = "INSERT INTO usuarioxgrupo (ID_USER, ID_GRUPO) VALUES ($user_id, $grupo_id)";
-            if ($conn->query($sql_insertar_relacion) === TRUE) {
-                echo "Relación usuario-grupo insertada exitosamente";
-            } else {
-                echo "Error al insertar la relación usuario-grupo: " . $conn->error;
-            }
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -78,58 +29,118 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador</title>
+    <link rel="stylesheet" href="panel_admin.css"/>
 </head>
 <body>
-    <h2>Panel de Administrador</h2>
-    <table>
+<header>
+  <img src="logo.png" class="logo">
+  <div class="botones">
+    <button class="compartir"><a href="../compartir_archivo.php"><strong>Compartir</strong></a></button>
+    <button class="mis-archivos"><a href="../mis_archivos.php"><strong>Mis archivos</strong></a></button>
+    <button class="grupo"><a href="../grupos.php"><strong>Grupo</strong></a></button>
+    <button class="nombre"><strong><?php echo $_SESSION['nom']?></strong></button>
+  </div>
+</header>
+
+<h1>Panel de Administrador</h1>
+<div class="box1">
+    <div class="box_form">
+        <h2 class="h2">Usuarios Registrados</h2>
+        <div class="acciones">
+        <!-- Barra de búsqueda -->
+        <input type="text" placeholder="Buscar...">
+       
+        </div>
+        <br><br>
+
+        <table id="tabla_usuarios">
+            <tr>
+                <th>Estado</th>
+                <th>Nombre de Usuario</th>
+                <th>Correo Electrónico</th>
+                <th>Departamentos</th>
+                <th>Acciones</th> <!-- Nueva columna para los botones de modificar -->
+            </tr>
+            <?php
+            // Consultar la base de datos para obtener los usuarios autorizados y no autorizados
+            $sql_usuarios_autorizados = "SELECT u.ID_USER, u.USER_NAME, u.email, u.estado, GROUP_CONCAT(g.NOMBRE_GRUPO) AS departamentos 
+                            FROM usuario u
+                            LEFT JOIN usuarioxgrupo ug ON u.ID_USER = ug.ID_USER
+                            LEFT JOIN grupos g ON ug.ID_GRUPO = g.ID_GRUPO
+                            WHERE u.estado IN ('autorizado', 'no_autorizado')
+                            GROUP BY u.ID_USER";
+            $result_usuarios_autorizados = $conn->query($sql_usuarios_autorizados);
+
+            if ($result_usuarios_autorizados->num_rows > 0) {
+                // Iterar sobre los resultados y mostrar cada usuario en la tabla
+                while ($row = $result_usuarios_autorizados->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . ucfirst($row["estado"]) . "</td>"; // Columna "Estado"
+                    echo "<td>" . $row["USER_NAME"] . "</td>";
+                    echo "<td>" . $row["email"] . "</td>";
+                    echo "<td>" . $row["departamentos"] . "</td>";
+                    // Botón para modificar cada usuario
+                    echo "<td><a href='modificar_user.php?id=" . $row["ID_USER"] . "'>Modificar</a></td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5'>No hay usuarios autorizados o no autorizados</td></tr>";
+            }
+            ?>
+        </table>
+    </div>
+</div>
+
+<div class="box2">
+    <div class="box_form2">
+    <h2 class="h3">Usuarios En Espera</h2>
+    <input type="text" id="busqueda" placeholder="Buscar...">
+    <table id="tabla_usuarios_espera">
         <tr>
+            <th>Estado</th>
             <th>Nombre de Usuario</th>
             <th>Correo Electrónico</th>
-            <th>Asignar Departamento</th>
-            <th>Acción</th>
+            <th>Departamentos</th>
+            <th>Acciones</th> <!-- Nueva columna para los botones de aceptar y rechazar -->
         </tr>
         <?php
-        // Mostrar los usuarios en el panel de administrador
-        $sql_usuarios = "SELECT ID_USER, USER_NAME, email FROM usuario WHERE estado = 'espera'";
-        $result_usuarios = $conn->query($sql_usuarios);
+        // Consultar la base de datos para obtener los usuarios en espera
+        $sql_usuarios_espera = "SELECT u.ID_USER, u.USER_NAME, u.email, u.estado, GROUP_CONCAT(g.NOMBRE_GRUPO) AS departamentos 
+                        FROM usuario u
+                        LEFT JOIN usuarioxgrupo ug ON u.ID_USER = ug.ID_USER
+                        LEFT JOIN grupos g ON ug.ID_GRUPO = g.ID_GRUPO
+                        WHERE u.estado = 'espera'
+                        GROUP BY u.ID_USER";
+        $result_usuarios_espera = $conn->query($sql_usuarios_espera);
 
-        if ($result_usuarios->num_rows > 0) {
-            // Consulta SQL para obtener los departamentos disponibles
-            $sql_departamentos = "SELECT NOMBRE_GRUPO FROM grupos";
-            $result_departamentos = $conn->query($sql_departamentos);
-
-            while ($row = $result_usuarios->fetch_assoc()) {
+        if ($result_usuarios_espera->num_rows > 0) {
+            // Iterar sobre los resultados y mostrar cada usuario en la tabla
+            while ($row = $result_usuarios_espera->fetch_assoc()) {
                 echo "<tr>";
+                echo "<td>" . ucfirst($row["estado"]) . "</td>"; // Columna "Estado"
                 echo "<td>" . $row["USER_NAME"] . "</td>";
                 echo "<td>" . $row["email"] . "</td>";
-                echo "<td>
-                        <form action='panel_admin.php' method='post'>
-                            <input type='hidden' name='user_id' value='" . $row["ID_USER"] . "'>
-                            <select name='departamento'>";
-
-                // Construir las opciones del select con los departamentos obtenidos
-                if ($result_departamentos->num_rows > 0) {
-                    while ($row_departamento = $result_departamentos->fetch_assoc()) {
-                        echo "<option value='" . $row_departamento["NOMBRE_GRUPO"] . "'>" . $row_departamento["NOMBRE_GRUPO"] . "</option>";
-                    }
-                }
-
-                echo "</select>
-                      </td>";
-                echo "<td>
-                            <input type='submit' name='accept' value='Aceptar'>
-                            <input type='submit' name='reject' value='Rechazar'>
-                      </td>";
+                echo "<td>" . $row["departamentos"] . "</td>";
+                // Botones para aceptar y rechazar cada usuario
+                echo "<td>";
+                echo "<form method='post' action='aceptar_usuario.php'>";
+                echo "<input type='hidden' name='id_usuario' value='" . $row["ID_USER"] . "'>";
+                echo "<input type='submit' name='aceptar' value='Aceptar'>";
+                echo "</form>";
+                echo "<form method='post' action='rechazar_usuario.php'>";
+                echo "<input type='hidden' name='id_usuario' value='" . $row["ID_USER"] . "'>";
+                echo "<input type='submit' name='rechazar' value='Rechazar'>";
+                echo "</form>";
+                echo "</td>";
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='4'>No hay usuarios en espera</td></tr>";
+            echo "<tr><td colspan='5'>No hay usuarios en espera</td></tr>";
         }
         ?>
     </table>
+</div>
+</div>
+
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
