@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+require '../vendor/autoload.php';
 // Verificar si el usuario está autenticado y tiene permisos
 if (!(isset($_SESSION['id_usuario']) && ($_SESSION['nom'] == 'joseph' || $_SESSION['nom'] == 'nil'))) {
     // Redirigir a la página de inicio de sesión o mostrar un mensaje de error
@@ -28,7 +28,7 @@ if ($conn->connect_error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador</title>
-    <link rel="stylesheet" href="panel_admin.css"/>
+    <link rel="stylesheet" href="../css/panel_admin.css"/>
 </head>
 <body>
 <header>
@@ -151,30 +151,25 @@ if ($conn->connect_error) {
         <th>Alert Severity</th>
     </tr>
     <?php
-    // Incluir la librería de MongoDB
-    require 'vendor/autoload.php';
-
     // Conexión a MongoDB (modificar según tus credenciales)
     $cliente = new MongoDB\Client("mongodb://localhost:27017");
-
-    // Seleccionar la base de datos y la colección
-    $base_de_datos = $cliente->selectDatabase('registros');
-    $coleccion = $base_de_datos->selectCollection('archivos');
-
+    $base_de_datos = $cliente->registros;
+    $coleccion = $base_de_datos->archivos;
+    
     // Consulta a la colección
-    $resultado = $coleccion->find();
+    $resultados = $coleccion->find([]);
 
     // Mostrar los resultados
-    foreach ($resultado as $documento) {
-        echo "<tr>";
-        echo "<td>" . $documento['nombre'] . "</td>";
-        echo "<td>" . $documento['ubicacion'] . "</td>";
-        echo "<td>" . $documento['hash'] . "</td>";
-        echo "<td>" . $documento['estado'] . "</td>";
-        echo "<td>" . $documento['clave_id'] . "</td>";
-        echo "<td>" . $documento['alert_severity'] . "</td>";
-        echo "</tr>";
-    }
+    foreach ($resultados as $documento) {
+    echo "ID: " . $documento['_id'] . "<br>";
+    echo "Usuario: " . $documento['usuario'] . "<br>";
+    echo "Nombre: " . $documento['nombre'] . "<br>";
+    echo "Ubicación: " . $documento['ubicacion'] . "<br>";
+    echo "Hash: " . $documento['hash'] . "<br>";
+    echo "Estado: " . $documento['estado'] . "<br>";
+    echo "Alert Severity: " . $documento['alert_severity'] . "<br>";
+    echo "<br>";
+}
     ?>
 </table>
 
