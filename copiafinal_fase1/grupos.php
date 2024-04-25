@@ -21,7 +21,7 @@ if ($conn->connect_error) {
 
 // Obtener el nombre del usuario desde la sesión
 $usuario = $_SESSION['nom'];
-echo $usuario;
+
 // Consulta para obtener los grupos en los que está inscrito el usuario
 $sql = "SELECT g.ID_GRUPO, g.NOMBRE_GRUPO
         FROM grupos g
@@ -31,71 +31,51 @@ $sql = "SELECT g.ID_GRUPO, g.NOMBRE_GRUPO
 
 $resultado = $conn->query($sql);
 
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupos</title>
+<link rel="stylesheet" href="/css/grupos.css">
+</head>
+<body>
+<header>
+  <img src="/css/logo.png" class="logo">
+  <div class="botones">
+    <button class="compartir"><a href="/compartir_archivo.php"><strong>Compartir</strong></a></button>
+    <button class="mis-archivos"><a href="/mis_archivos.php"><strong>Mis archivos</strong></a></button>
+    <button class="grupo"><a href="/grupos.php"><strong>Grupo</strong></a></button>
+    <button class="nombre"><strong><?php echo $_SESSION['nom']?></strong></button>
+  </div>
+</header>
+<div class="titulo">
+<h1>Grupos</h1>
+</div>
+<div class="nom">
+<p><b>Nom:<b></p>
+<hr class='linea_separacion'>
+</div>
+<table>
+<?php
 if ($resultado->num_rows > 0) {
     // Mostrar los grupos y permitir al usuario interactuar con ellos
     while ($fila = $resultado->fetch_assoc()) {
         $id_grupo = $fila['ID_GRUPO'];
         $nombre_grupo = $fila['NOMBRE_GRUPO'];
-        echo "<h2>Grupo: $nombre_grupo</h2>";
-
-        // Directorio donde se guardarán los archivos del grupo
-        $ruta_grupo = "/var/www/servidor/grupos/$nombre_grupo/";
-
-        // Mostrar los archivos dentro del grupo
-        if (is_dir($ruta_grupo)) {
-            $archivos_grupo = scandir($ruta_grupo);
-            echo "<h3>Archivos del grupo:</h3>";
-            echo "<ul>";
-            foreach ($archivos_grupo as $archivo) {
-                if ($archivo != '.' && $archivo != '..') {
-                    // Agregar enlace de descarga para cada archivo
-                    echo "<li><a href='descargar.php?file=$nombre_grupo/$archivo'>$archivo</a></li>";
-                }
-            }
-            echo "</ul>";
-        } else {
-            echo "No se encontraron archivos en el grupo.";
-        }
+        echo "<td><img src='/css/archivo.png' width='55' height='55'>
+        <a href='/mostrar_archivos.php?id_grupo=$id_grupo'>$nombre_grupo</a></td>";
+        echo "</tr>";
     }
-    // Mostrar el formulario de subida de archivos
-    echo "<h3>Subir Archivo:</h3>";
-    echo "<form action='grupos.php' method='post' enctype='multipart/form-data'>";
-    echo "<select name='id_grupo'>";
-    // Rebobinar el puntero de resultados para volver a recorrer los grupos
-    mysqli_data_seek($resultado, 0);
-    while ($fila = $resultado->fetch_assoc()) {
-        $id_grupo = $fila['ID_GRUPO'];
-        $nombre_grupo = $fila['NOMBRE_GRUPO'];
-        echo "<option value='$nombre_grupo'>$nombre_grupo</option>";
-    }
-    echo "</select>";
-    echo "<input type='file' name='file[]'>";
-    echo "<input type='submit' value='Subir archivo' name='submit'>";
-    echo "</form>";
-
-    // Procesar la subida de archivos
-    if (isset($_FILES['file'])) {
-        $nombre_grupo = $_POST['id_grupo'];
-        $ruta_grupo = "/var/www/servidor/grupos/$nombre_grupo/";
-        $uploadsDirectory = $ruta_grupo;
-        $uploadedFiles = [];
-
-        foreach ($_FILES['file']['tmp_name'] as $key => $tempFile) {
-            $nombreArchivo = $_FILES['file']['name'][$key];
-            $targetFile = $uploadsDirectory . basename($nombreArchivo);
-
-            if (move_uploaded_file($tempFile, $targetFile)) {
-                $uploadedFiles[] = $targetFile;
-            }
-        }
-        $scriptPath = '/var/www/servidor/virustotal.py';
-        foreach ($uploadedFiles as $file) {
-            $command = "python3 $scriptPath $nombre_grupo $usuario";
-            shell_exec($command);
-        }
-}
 } else {
-    echo "El usuario no está inscrito en ningún grupo.";
+    echo "<tr><td colspan='1'>El usuario no está inscrito en ningún grupo.</td></tr>";
 }
+
 $conn->close();
 ?>
+</table>
+
+</body>
+</html>
