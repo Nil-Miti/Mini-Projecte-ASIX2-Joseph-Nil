@@ -49,6 +49,7 @@ button.compartir {
 .box1 {
   margin-top: 4%;
   margin-left: 1%;
+  margin-top: 5%;
 }
 
 button.nombre {
@@ -200,9 +201,28 @@ h1 {
 }
 
 .box_form2{
-  margin-left: 1034px;
+  margin-left: 927px;
   background-color: #384F3A;
   color: white;
   padding-top: 3%;
   border-radius: 0.375rem;
+}
+
+.h1mongodb{
+  margin-top: -23%;
+  margin-left: 3%;
+}
+
+.mongodb{
+background-color: #384F3A;
+  padding-top: 6%;
+  margin-top: -58px;
+  margin-left: 2%;
+  width: 45%;
+  border-radius: 0.375rem;
+  color: white;
+}
+
+.aceptar{
+
 }
