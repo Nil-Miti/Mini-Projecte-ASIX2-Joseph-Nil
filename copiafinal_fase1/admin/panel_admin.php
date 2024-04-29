@@ -98,8 +98,7 @@ if ($conn->connect_error) {
                 <th>Estado</th>
                 <th>Nombre de Usuario</th>
                 <th>Correo Electrónico</th>
-                <th>Departamentos</th>
-                <th>Acciones</th> <!-- Nueva columna para los botones de aceptar y rechazar -->
+                <th class="btt_acciones">Acciones</th> <!-- Nueva columna para los botones de aceptar y rechazar -->
             </tr>
             <?php
             // Consultar la base de datos para obtener los usuarios en espera
@@ -118,12 +117,11 @@ if ($conn->connect_error) {
                     echo "<td>" . ucfirst($row["estado"]) . "</td>"; // Columna "Estado"
                     echo "<td>" . $row["USER_NAME"] . "</td>";
                     echo "<td>" . $row["email"] . "</td>";
-                    echo "<td>" . $row["departamentos"] . "</td>";
                     // Botones para aceptar y rechazar cada usuario
                     echo "<td>";
                     echo "<form method='post' action='aceptar_usuario.php'>";
                     echo "<input type='hidden' name='id_usuario' value='" . $row["ID_USER"] . "'>";
-                    echo "<input type='submit' name='aceptar' value='Aceptar'>";
+                    echo "<input class='aceptar' type='submit' name='aceptar' value='Aceptar'>";
                     echo "</form>";
                     echo "<form method='post' action='rechazar_usuario.php'>";
                     echo "<input type='hidden' name='id_usuario' value='" . $row["ID_USER"] . "'>";
@@ -140,16 +138,15 @@ if ($conn->connect_error) {
     </div>
 </div>
 
-<h1>Resultados de la colección MongoDB</h1>
-<table>
+<h1 class="h1mongodb">Historial de ficheros</h1>
+<table class="mongodb">
     <tr>
         <th>Nombre</th>
         <th>Ubicación</th>
-        <th>Hash</th>
         <th>Estado</th>
-        <th>Clave ID</th>
-        <th>Alert Severity</th>
     </tr>
+
+<div class="mongodb">
     <?php
     // Conexión a MongoDB (modificar según tus credenciales)
     $cliente = new MongoDB\Client("mongodb://localhost:27017");
@@ -159,20 +156,17 @@ if ($conn->connect_error) {
     // Consulta a la colección
     $resultados = $coleccion->find([]);
 
-    // Mostrar los resultados
+    // Mostrar los resultados dentro de la tabla
     foreach ($resultados as $documento) {
-    echo "ID: " . $documento['_id'] . "<br>";
-    echo "Usuario: " . $documento['usuario'] . "<br>";
-    echo "Nombre: " . $documento['nombre'] . "<br>";
-    echo "Ubicación: " . $documento['ubicacion'] . "<br>";
-    echo "Hash: " . $documento['hash'] . "<br>";
-    echo "Estado: " . $documento['estado'] . "<br>";
-    echo "Alert Severity: " . $documento['alert_severity'] . "<br>";
-    echo "<br>";
-}
+        echo "<tr>";
+        echo "<td>" . $documento['nombre'] . "</td>";
+        echo "<td>" . $documento['ubicacion'] . "</td>";
+        echo "<td>" . $documento['estado'] . "</td>";
+        echo "</tr>";
+    }
     ?>
 </table>
-
+</div>
 <script>
     // Filtrar usuarios registrados
     document.getElementById("buscar_registrados").addEventListener("input", function() {
