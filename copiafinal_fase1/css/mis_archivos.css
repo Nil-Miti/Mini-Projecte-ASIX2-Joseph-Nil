@@ -43,9 +43,40 @@ button{
 }
 
 .linea_separacion {
-margin-top: 4%;
+  margin-top: -2%;
   margin-right: -1%;
-  margin-left: -3%;
+  margin-left: 3%;
   color: white;
 }
+li{
+  margin-bottom: 20px;
+  list-style: none;
+}
+.archivos{
+  margin-left: 4%;
+  font-size: 25px;
+}
+.titulo {
+  margin-left: 6%;
+  margin-top: 3%;
+  font-size: 40px;
+}
+.nom {
+  margin-left: 4%;
+  margin-right: 18%;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  margin-top: 3%;
+  font-size: 25px;
+}
+.propietari {
+  margin-left: 46%;
+  margin-right: 18%;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  margin-top: -4%;
+  font-size: 25px;
+}
+.resultado{
+  margin-left: 38%;
+  font-size: 25px;
+  margin-top: -2%;
 }
