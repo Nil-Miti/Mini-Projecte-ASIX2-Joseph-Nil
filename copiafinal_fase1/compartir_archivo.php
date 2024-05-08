@@ -101,6 +101,7 @@ $command = "python3 virustotal_compartir.py $titulo $user";
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
+  
   <title>Subir Carpeta/Archivo</title>
 <?php
 session_start();
@@ -206,11 +207,11 @@ $command = "python3 virustotal_compartir.py $titulo $user";
 <head>
   <meta charset="utf-8">
   <title>Subir Carpeta/Archivo</title>
-  <link rel="stylesheet" href="compartir_archivo.css"/>
+  <link rel="stylesheet" href="/css/compartir_archivos.css"/>
 </head>
 <body>
 <header>
-  <img src="logo.png" class="logo">
+  <img src="/css/logo.png" class="logo">
   <div class="botones">
     <button class="compartir"><a href="compartir_archivo.php"><strong>Compartir</strong></button></a>
     <button class="mis-archivos"><a href="mis_archivos.php"><strong>Mis archivos</strong></button></a>
