@@ -95,6 +95,11 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
     CREATE DATABASE IF NOT EXISTS server;
 
     USE server;
+#CREAR USUARIO ADMIN PARA LA BASE DE DATOS
+
+      CREATE USER 'admin'@'localhost' IDENTIFIED BY '1234';
+      GRANT ALL PRIVILEGES ON server.* TO 'admin'@'localhost';
+      FLUSH PRIVILEGES;
 
 #CREAR TABLA Usuario
 
