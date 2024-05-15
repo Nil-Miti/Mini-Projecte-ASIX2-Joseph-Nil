@@ -21,7 +21,7 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
       
       curl -4 icanhazip.com
 
-#CREAR UN FICHERO EN sites-aviable y configurarlo:
+#CREAR UN FICHERO EN /etc/apache/sites-aviable y configurarlo con el nombre de servidor.conf:
 
       <VirtualHost *:80>    
       
@@ -73,7 +73,7 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
 
 #Agregar el repositorio de MongoDB al sources.list.d
 
-      echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/trusted.gpg.d/mongodb.gpg] https://repo.mongodb.org/apt/ubuntujammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongo.list
+      sudo sh -c 'echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/keyrings/mongodb.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" >> /etc/apt/sources.list.d/mongo.list'
 
 #Actualizar la lista de paquetes
 
