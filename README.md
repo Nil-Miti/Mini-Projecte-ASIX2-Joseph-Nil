@@ -58,6 +58,8 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
       #Tras la instalación, procedemos a habilitar el servicio al arranque y lo iniciamos:
       
       systemctl start mariadb.service
+      
+      sudo apt install php-mysqli
      
 #Instalar gnupg2
 
