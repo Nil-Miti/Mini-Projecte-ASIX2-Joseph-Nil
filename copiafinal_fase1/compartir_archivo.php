@@ -261,4 +261,3 @@ $command = "python3 virustotal_compartir.py $titulo $user";
 </script>
 </body>
 </html>
-sdgfdfg
