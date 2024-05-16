@@ -105,6 +105,8 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
 
       cd /var/www/servidor
 
+      sudo apt install composer
+
       composer require mongodb/mongodb
       
 #CREAR BASE DE DATOS EN MARIADB
