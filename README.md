@@ -95,7 +95,7 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
       
       sudo pecl install mongodb
       
-      Añadir la linea *extension=mongodb.so* en */etc/php/8.1/apache2/php.ini*
+      Añadir la linea <b>extension=mongodb.so</b> en <b>/etc/php/8.1/apache2/php.ini</b>
 
       sudo apt-get install libssl-dev pkg-config
 
