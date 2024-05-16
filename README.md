@@ -75,7 +75,7 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
 
 #Agregar el repositorio de MongoDB al sources.list.d
 
-      sudo sh -c 'echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/keyrings/mongodb.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" >> /etc/apt/sources.list.d/mongo.list'
+      sudo sh -c 'echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/trusted.gpg.d/mongodb.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" >> /etc/apt/sources.list.d/mongo.list'
 
 #Actualizar la lista de paquetes
 
@@ -89,6 +89,10 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
 
       systemctl start mongod
 
+#Instalar mongodb para PHP
+      sudo apt install php-pear php-dev
+      sudo pecl install mongodb-1.18.0
+      
 #CREAR BASE DE DATOS EN MARIADB
 
     sudo mariadb
