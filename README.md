@@ -95,12 +95,17 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
       
       sudo pecl install mongodb
       
-      Añadir la linea <b>extension=mongodb.so</b> en <b>/etc/php/8.1/apache2/php.ini</b>
+      Añadir la linea extension=mongodb.so en /etc/php/8.1/apache2/php.ini
 
       sudo apt-get install libssl-dev pkg-config
 
       sudo apt-get update
 
+      Tenemos que ubicarnos en la carpeta donde hay toda la web y hacer lo siguiente:
+
+      cd /var/www/servidor
+
+      composer require mongodb/mongodb
       
 #CREAR BASE DE DATOS EN MARIADB
 
