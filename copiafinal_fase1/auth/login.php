@@ -25,7 +25,7 @@ if (isset($_REQUEST['login'])) {
         $row = mysqli_fetch_assoc($result);
         $_SESSION['id_usuario'] = 1;
         $_SESSION['nom'] = $name;
-        header("Location: ../index.html");
+        header("Location: ../compartir_archivo.php");
         exit;
     } else {
         $sql_pending = "SELECT * FROM usuario WHERE (USER_NAME = '".$name."' OR email = '".$email."') AND PASSW = '".$password."' AND estado != 'autorizado'";
