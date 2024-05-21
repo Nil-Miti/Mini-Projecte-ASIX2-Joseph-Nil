@@ -47,7 +47,7 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
      
      sudo systemctl restart apache2
 
-# Instalar MARIADB Y MONGODB
+# Instalar MARIADB 
 
       apt update
       
@@ -61,54 +61,27 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
       
       sudo apt install php-mysqli
      
-#Instalar gnupg2
+#Instalar MONGODB en DOCKER
 
-      apt install gnupg2 -y
+       sudo apt update
+       sudo apt install apt-transport-https ca-certificates curl software-properties-common
 
-#Descargar la clave pública de MongoDB
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-      wget -nc https://www.mongodb.org/static/pgp/server-6.0.asc
+      echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-#Agregar la clave pública al keyring de apt
-    
-      cat server-6.0.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/mongodb.gpg >/dev/null
+      sudo apt update
+      sudo apt install docker-ce docker-ce-cli containerd.io
 
-#Agregar el repositorio de MongoDB al sources.list.d
+      sudo systemctl status docker
 
-      sudo sh -c 'echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/trusted.gpg.d/mongodb.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" >> /etc/apt/sources.list.d/mongo.list'
-
-#Actualizar la lista de paquetes
-
-      apt update
-
-#Instalar MongoDB
-
-      apt install mongodb-org -y
-
-#Iniciar el servicio de MongoDB
-
-      systemctl start mongod
-
-#Instalar mongodb para PHP
-
-      sudo apt install php-pear php-dev
+      docker pull composer
+      docker run --name php-composer -v $(pwd):/app composer
+      docker pull mongo
+      docker run --name mongodb -d -p 27017:27017 -v mongo-data:/data/db mongo
+      //en la carpeta del servidor hay un docker-compose, si os interesa habra que ingresar:docker-compose up -d
       
-      sudo pecl install mongodb
-      
-      Añadir la linea extension=mongodb.so en /etc/php/8.1/apache2/php.ini
 
-      sudo apt-get install libssl-dev pkg-config
-
-      sudo apt-get update
-
-      Tenemos que ubicarnos en la carpeta donde hay toda la web y hacer lo siguiente:
-
-      cd /var/www/servidor
-
-      sudo apt install composer
-
-      composer require mongodb/mongodb
-      
 #CREAR BASE DE DATOS EN MARIADB
 
     sudo mariadb
