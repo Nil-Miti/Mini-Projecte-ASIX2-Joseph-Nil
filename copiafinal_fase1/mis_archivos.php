@@ -57,10 +57,11 @@ $collection = $client->registros->archivos; // Reemplaza "database_name" y "coll
 </div>
 <div class="nom">
 <p><b>Nom: </b></p>
-<p class= "propietari"><b>Propietari: </b></p>
-<hr class="linea_separacion">
 </div>
-
+<div class= "propietari">
+<p><b>Propietari: </b></p>
+</div>
+<hr class="linea_separacion">
 <?php 
 
 // Consulta para obtener los grupos en los que está inscrito el usuario
