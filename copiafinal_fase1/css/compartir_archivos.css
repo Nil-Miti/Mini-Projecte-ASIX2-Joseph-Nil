@@ -25,11 +25,11 @@ header{
 .formulari{
   background-color: white;
   margin-top: 10%;
-  margin-right: 80%;
-  padding-bottom: 4%;
+  margin-right: 78%;
+  padding-bottom: 6%;
   padding-top: 1%;
   position: absolute;
-  border-radius: 4%;
+  border-radius: 10%;
   margin-left: 5%;
   font-family: Actief Grotesque Normal, -apple-system, \.SFNSText-Regular, San Francisco, Roboto, Segoe UI, Helvetica Neue, Lucida Grande, sans-serif;
 }
@@ -88,7 +88,7 @@ button:hover {
     background-color: #f0f0f0; /* Cambia el color de fondo al pasar el ratón */
 }
 .logo {
-  width: 4%; /* Tamaño deseado para la imagen del logo */
+  width: 9%; /* Tamaño deseado para la imagen del logo */
   position: absolute;
   left: 1%;
 }
