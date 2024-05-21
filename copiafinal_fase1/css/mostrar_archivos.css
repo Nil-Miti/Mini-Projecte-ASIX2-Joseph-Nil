@@ -102,6 +102,13 @@ button:hover {
    margin-bottom: 20px;
  }
  .subida {
-  margin-top: -555px;
-  margin-left: 1350px;
+  margin-top: -13px;
+  margin-left: 1302px;
  }
+ .texto_subida{
+  margin-top: -114px;
+  margin-left: 1302px;
+}
+.eliminar{
+  margin-left: 1068px
+}
