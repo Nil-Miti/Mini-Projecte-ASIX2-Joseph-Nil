@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #438349;
-  color: white;
+  color: rgb(0, 0, 0);
   margin: 0;
   padding: 0;
 }
@@ -45,6 +45,7 @@ table {
   border-collapse: collapse;
   margin: 20px 0;
   margin-left: 8%;
+  font-size: 30px;
 }
 
 th, td {
