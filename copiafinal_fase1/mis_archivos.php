@@ -64,10 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_file'])) {
 <header>
   <img src="/css/logo.png" class="logo">
   <div class="botones">
-    <button><strong><a href="compartir_archivo.php">Compartir</a></strong></button>
+    <button class="compartir"><strong><a href="compartir_archivo.php">Compartir</a></strong></button>
     <button><strong><a href="mis_archivos.php">Mis archivos</a></strong></button>
     <button><strong><a href="grupos.php">Grupo</a></strong></button>
-    <button><strong><?php echo $_SESSION['nom']?></strong></button>
+    <button class="nombre"><strong><?php echo $_SESSION['nom']?></strong></button>
   </div>
 </header>
 <div class="titulo">
