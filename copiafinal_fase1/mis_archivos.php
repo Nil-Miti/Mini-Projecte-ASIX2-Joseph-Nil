@@ -84,30 +84,30 @@ if ($resultado->num_rows > 0) {
         // Mostrar los archivos dentro del grupo
         echo "<div class='archivos'>";
         if (is_dir($ruta_carpetas)) {
-            $archivos_carpeta = scandir($ruta_carpetas);
+            $archivos_carpeta = array_diff(scandir($ruta_carpetas), array('.', '..'));
             foreach ($archivos_carpeta as $archivo) {
-                if ($archivo != '.' && $archivo != '..') {
-                    // Buscar en MongoDB el nombre del archivo y recuperar el usuario que lo creó
-                    $documento = $collection->findOne(['nombre' => $archivo]);
-                    if ($documento) {
-                        $propietario = $documento['usuario'];
-                        // Agregar enlace de descarga para cada archivo
-                        echo "<li><img src='/css/foto.png' width='45' height='45'><a href='descargar_compartido.php?file=$archivo'>$archivo</a>";
-                        // Mostrar el propietario del archivo
-                        echo "<p class='resultado'>$propietario</p>";
-                    } else {
-                        echo "<p>No se encontró información sobre el propietario de $archivo.</p>";
-                    }
+                // Buscar en MongoDB el nombre del archivo y recuperar el usuario que lo creó
+                $documento = $collection->findOne(['nombre' => $archivo]);
+                if ($documento) {
+                    $propietario = $documento['usuario'];
+                    // Agregar enlace de descarga para cada archivo
+                    echo "<div class='archivo-propietario'>";
+                    echo "<img src='/css/foto.png' width='45' height='45'>";
+                    echo "<a href='descargar_compartido.php?file=$archivo'>$archivo</a>";
+                    // Mostrar el propietario del archivo
+                    echo "<span class='resultado'>$propietario</span>";
+                    echo "</div>";
+                } else {
+                    echo "<p>No se encontró información sobre el propietario de $archivo.</p>";
                 }
             }
         } else {
             echo "<p>No se encontraron archivos en tu carpeta.</p>";
         }
+        echo "</div>"; // Cerrar div .archivos
     }
     $conn->close();
 }
-
 ?>
-
 </body>
 </html>
