@@ -105,7 +105,7 @@ if ($resultado->num_rows > 0) {
             $archivos_carpeta = array_diff(scandir($ruta_carpetas), array('.', '..'));
             if (count($archivos_carpeta) > 1) {
                 echo "<tr>";
-                echo "<td colspan='3'><a href='javascript:void(0);' onclick='toggleFiles(\"carpeta_$id_Carpeta\")'><img src='/css/folder.png' width='45' height='45'> $nombre_Carpeta</a></td>";
+                echo "<td colspan='3'><a href='javascript:void(0);' onclick='toggleFiles(\"carpeta_$id_Carpeta\")'><img src='/css/archivo.png' width='45' height='45'> $nombre_Carpeta</a></td>";
                 echo "</tr>";
                 echo "<tr id='carpeta_$id_Carpeta' style='display:none;'><td colspan='3'>";
                 echo "<table>";
