@@ -34,6 +34,7 @@ $collection = $client->registros->archivos;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_file'])) {
     $archivo = $_POST['delete_file'];
+    $id_Carpeta = $_POST['id_Carpeta'];
     $nombre_Carpeta = $_POST['nombre_Carpeta'];
 
     $ruta_archivo = "/var/www/servidor/archivos_compartidos/$nombre_Carpeta/$archivo";
@@ -44,7 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_file'])) {
     }
 
     // Eliminar el documento relacionado en MongoDB
-    $collection->deleteOne(['nombre' => $archivo]);
+    $collection->deleteOne(['nombre' => $archivo, 'carpeta' => $nombre_Carpeta]);
+
+    // Eliminar las entradas en la tabla de MariaDB relacionadas con el archivo
+    $conn->query("DELETE FROM Compartidos WHERE Nombre_Archivo='$archivo' AND ID_Carpeta='$id_Carpeta'");
+    $conn->query("DELETE FROM usuarioxcarpeta WHERE Nombre_Archivo='$archivo' AND ID_Carpeta='$id_Carpeta'");
 }
 ?>
 
@@ -105,12 +110,12 @@ if ($resultado->num_rows > 0) {
             $archivos_carpeta = array_diff(scandir($ruta_carpetas), array('.', '..'));
             if (count($archivos_carpeta) > 1) {
                 echo "<tr>";
-                echo "<td colspan='3'><a href='javascript:void(0);' onclick='toggleFiles(\"carpeta_$id_Carpeta\")'><img src='/css/archivo.png' width='45' height='45'> $nombre_Carpeta</a></td>";
+                echo "<td colspan='3'><a href='javascript:void(0);' onclick='toggleFiles(\"carpeta_$id_Carpeta\")'><img src='/css/folder.png' width='45' height='45'> $nombre_Carpeta</a></td>";
                 echo "</tr>";
                 echo "<tr id='carpeta_$id_Carpeta' style='display:none;'><td colspan='3'>";
                 echo "<table>";
                 foreach ($archivos_carpeta as $archivo) {
-                    $documento = $collection->findOne(['nombre' => $archivo]);
+                    $documento = $collection->findOne(['nombre' => $archivo, 'carpeta' => $nombre_Carpeta]);
                     if ($documento) {
                         $propietario = $documento['usuario'];
                         echo "<tr>";
@@ -133,11 +138,11 @@ if ($resultado->num_rows > 0) {
                 echo "</td></tr>";
             } else {
                 foreach ($archivos_carpeta as $archivo) {
-                    $documento = $collection->findOne(['nombre' => $archivo]);
+                    $documento = $collection->findOne(['nombre' => $archivo, 'carpeta' => $nombre_Carpeta]);
                     if ($documento) {
                         $propietario = $documento['usuario'];
                         echo "<tr>";
-                        echo "<td><img src='/css/archivo.png' width='45' height='45'> <a href='descargar_compartido.php?file=$archivo'>$archivo</a></td>";
+                        echo "<td><img src='/css/foto.png' width='45' height='45'> <a href='descargar_compartido.php?file=$archivo'>$archivo</a></td>";
                         echo "<td>$propietario</td>";
                         echo "<td>
                                 <form method='POST' style='display:inline;'>
