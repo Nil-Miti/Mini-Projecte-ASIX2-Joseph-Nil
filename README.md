@@ -81,6 +81,11 @@ Ante los poblemas dados para ejecutar el script de instalacion en virtualbox se 
       docker run --name mongodb -d -p 27017:27017 -v mongo-data:/data/db mongo
       //para ingresar al mongodb se tendra que ingresar:sudo docker exec -it mongodb mongo
       //en la carpeta del servidor hay un docker-compose, si os interesa habra que ingresar:docker-compose up -d
+
+      sudo apt install python3-pip
+      
+      pip install pymongo
+
       
 
 #CREAR BASE DE DATOS EN MARIADB
