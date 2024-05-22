@@ -24,6 +24,37 @@ $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
 $database = $mongoClient->registros;
 $collection = $database->archivos;
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['crear_grupo'])) {
+        $nombre_grupo = $_POST['nombre_grupo'];
+        $sql_insert_grupo = "INSERT INTO grupos (NOMBRE_GRUPO) VALUES ('$nombre_grupo')";
+        if ($conn->query($sql_insert_grupo) === TRUE) {
+            echo "Nuevo grupo creado correctamente.";
+        } else {
+            echo "Error: " . $sql_insert_grupo . "<br>" . $conn->error;
+        }
+    } elseif (isset($_POST['eliminar_archivo'])) {
+        $archivo_id = $_POST['archivo_id'];
+        $collection->deleteOne(['_id' => new MongoDB\BSON\ObjectID($archivo_id)]);
+        echo "Archivo eliminado correctamente.";
+    } elseif (isset($_POST['aceptar_usuario'])) {
+        $id_usuario = $_POST['id_usuario'];
+        $sql_aceptar_usuario = "UPDATE usuario SET estado = 'autorizado' WHERE ID_USER = $id_usuario";
+        if ($conn->query($sql_aceptar_usuario) === TRUE) {
+            echo "Usuario aceptado correctamente.";
+        } else {
+            echo "Error: " . $sql_aceptar_usuario . "<br>" . $conn->error;
+        }
+    } elseif (isset($_POST['rechazar_usuario'])) {
+        $id_usuario = $_POST['id_usuario'];
+        $sql_rechazar_usuario = "UPDATE usuario SET estado = 'no_autorizado' WHERE ID_USER = $id_usuario";
+        if ($conn->query($sql_rechazar_usuario) === TRUE) {
+            echo "Usuario rechazado correctamente.";
+        } else {
+            echo "Error: " . $sql_rechazar_usuario . "<br>" . $conn->error;
+        }
+    }
+}
 ?>
 
 <!doctype html>
@@ -72,14 +103,15 @@ $collection = $database->archivos;
     <div class="row">
         <nav class="col-sm-3" id="myScrollspy">
             <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
-                <li class="active"><a href="#zona1">Section 1</a></li>
-                <li><a href="#zona2">Section 2</a></li>
-                <li><a href="#zona3">Section 3</a></li>
+                <li class="active"><a href="#usuarios">Usuarios</a></li>
+                <li><a href="#usuarios_espera">Usuarios en Espera</a></li>
+                <li><a href="#archivos">Archivos</a></li>
+                <li><a href="#creacion_grupo">Creación de Grupo</a></li>
             </ul>
         </nav>
         <div class="col-sm-9">
-            <div id="zona1" class="section">
-                <h2>Section 1</h2>
+            <div id="usuarios" class="section">
+                <h2>Usuarios</h2>
                 <table id="section1" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
@@ -117,8 +149,8 @@ $collection = $database->archivos;
                     </tbody>
                 </table>
             </div>
-            <div id="zona2" class="section">
-                <h2>Section 2</h2>
+            <div id="usuarios_espera" class="section">
+                <h2>Usuarios en Espera</h2>
                 <table id="section2" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
@@ -145,13 +177,13 @@ $collection = $database->archivos;
                                 echo "<td>" . $row["USER_NAME"] . "</td>";
                                 echo "<td>" . $row["email"] . "</td>";
                                 echo "<td>";
-                                echo "<form method='post' action='aceptar_usuario.php'>";
+                                echo "<form method='post' style='display:inline;'>";
                                 echo "<input type='hidden' name='id_usuario' value='" . $row["ID_USER"] . "'>";
-                                echo "<input class='btn btn-success' type='submit' name='aceptar' value='Aceptar'>";
+                                echo "<input class='btn btn-success' type='submit' name='aceptar_usuario' value='Aceptar'>";
                                 echo "</form>";
-                                echo "<form method='post' action='rechazar_usuario.php'>";
+                                echo "<form method='post' style='display:inline;'>";
                                 echo "<input type='hidden' name='id_usuario' value='" . $row["ID_USER"] . "'>";
-                                echo "<input class='btn btn-danger' type='submit' name='rechazar' value='Rechazar'>";
+                                echo "<input class='btn btn-danger' type='submit' name='rechazar_usuario' value='Rechazar'>";
                                 echo "</form>";
                                 echo "</td>";
                                 echo "</tr>";
@@ -163,8 +195,8 @@ $collection = $database->archivos;
                     </tbody>
                 </table>
             </div>
-            <div id="zona3" class="section">
-                <h2>Section 3</h2>
+            <div id="archivos" class="section">
+                <h2>Archivos</h2>
                 <table id="section3" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
@@ -185,12 +217,27 @@ $collection = $database->archivos;
                             echo "<td>" . $archivo['ubicacion'] . "</td>";
                             echo "<td>" . $archivo['estado'] . "</td>";
                             echo "<td>" . $archivo['fecha'] . "</td>";
-                            echo "<td><a href='modificar_archivo.php?id=" . $archivo['_id'] . "'>Modificar</a></td>";
+                            echo "<td>";
+                            echo "<form method='post' style='display:inline;'>";
+                            echo "<input type='hidden' name='archivo_id' value='" . $archivo['_id'] . "'>";
+                            echo "<input class='btn btn-danger' type='submit' name='eliminar_archivo' value='Eliminar'>";
+                            echo "</form>";
+                            echo "</td>";
                             echo "</tr>";
                         }
                         ?>
                     </tbody>
                 </table>
+            </div>
+            <div id="creacion_grupo" class="section">
+                <h2>Creación de Grupo</h2>
+                <form method="post" action="">
+                    <div class="form-group">
+                        <label for="nombre_grupo">Nombre del Grupo:</label>
+                        <input type="text" class="form-control" id="nombre_grupo" name="nombre_grupo" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="crear_grupo">Crear Grupo</button>
+                </form>
             </div>
         </div>
     </div>
