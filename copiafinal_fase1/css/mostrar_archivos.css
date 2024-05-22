@@ -24,16 +24,16 @@ margin-left: 1530px;
 
 
 button {
-   border: 0;
-   height: auto;
-   position: relative;
-   color: black;
-   display: inline-block;
-   line-height: 2.375rem;
-   padding: 0 10px;
-   background: #fff;
-   border-right: 1px solid rgba(23, 24, 26, .11);
-   border-radius: 0;
+  border: 0;
+  height: auto;
+  position: relative;
+  color: black;
+  display: inline-block;
+  line-height: 2.375rem;
+  padding: 0 10px;
+  background: #fff;
+  border-right: 1px solid rgba(23, 24, 26, .11);
+  border-radius: 0;
 }
 
 button a {
@@ -87,7 +87,6 @@ button:hover {
   .nom{
   margin-left: 60px;
   margin-right: 18px;
-   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
    margin-top: 3%;
    font-size: 25px;
  }
