@@ -1,0 +1,137 @@
+body {
+   background-color: #438349;
+}
+
+header{
+   margin-left: 1530px;
+
+}
+
+.botones {
+  display: flex;
+  margin-top: 6%;
+}
+
+
+.capçalera{
+  padding-top: 0%;
+  width: 100px;
+  top: 10%;
+  cursor: pointer;
+  margin-bottom: 10%;
+}
+
+.formulari{
+  background-color: white;
+  margin-top: 10%;
+  margin-right: 78%;
+  padding-bottom: 6%;
+  padding-top: 1%;
+  position: absolute;
+  border-radius: 10%;
+  margin-left: 5%;
+  font-family: Actief Grotesque Normal, -apple-system, \.SFNSText-Regular, San Francisco, Roboto, Segoe UI, Helvetica Neue, Lucida Grande, sans-serif;
+}
+
+.contenido{
+  margin-left: 2%;
+  margin-right: 4%;
+  margin-top: 12%;
+}
+
+.button1 {
+  border: none;
+  left: 6%;
+  position: absolute;
+  top: 85%;
+  width: 82%;
+  height: 10%;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-radius: 1.5em;
+}
+
+
+.formulari input.caja {
+  border: none;
+}
+
+button {
+    border: 0;
+    height: auto;
+    position: relative;
+    color: black;
+    display: inline-block;
+    line-height: 2.375rem;
+    padding: 0 12px;
+    background: #fff;
+    border-right: 1px solid rgba(23, 24, 26, .11);
+    border-radius: 0;
+}
+
+button a {
+    color: inherit; /* Hereda el color del texto del botón */
+}
+
+button.compartir {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+button.nombre {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+button:hover {
+    background-color: #f0f0f0; /* Cambia el color de fondo al pasar el ratón */
+}
+.logo {
+  width: 9%; /* Tamaño deseado para la imagen del logo */
+  position: absolute;
+  left: 1%;
+}
+
+.icono-suma {
+  position: absolute;
+  width: 13%;
+  left: 0%;
+  top: 9%;
+}
+
+.linea_separacion{
+  margin-left: -0%;
+
+}
+
+p {
+  font-size: small;
+  position: absolute;
+  top: 11%;
+}
+
+h1{
+  position: absolute;
+  top: 1%;
+}
+
+hr.hr {
+  margin-right: -14%;
+  margin-left: 6%;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
+}
