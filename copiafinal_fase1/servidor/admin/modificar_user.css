@@ -1,0 +1,150 @@
+/* mostrar_archivos.css */
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Header Styles */
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    height: 50px;
+}
+
+header .botones button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+header .botones button a {
+    color: white;
+    text-decoration: none;
+}
+
+header .botones button:hover {
+    background-color: #777;
+}
+
+/* Title Styles */
+.titulo {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.titulo h1 {
+    color: #333;
+}
+
+/* Upload Section Styles */
+.nom {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.nom p {
+    margin: 0;
+}
+
+.nom hr.linea_separacion {
+    margin: 10px 0;
+}
+
+.nom h2.texto_subida {
+    color: #555;
+}
+
+.nom form.subida {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nom form.subida input[type="file"] {
+    margin: 10px 0;
+}
+
+.nom form.subida input[type="submit"] {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.nom form.subida input[type="submit"]:hover {
+    background-color: #555;
+}
+
+/* Files List Styles */
+.archivos {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+}
+
+.archivos ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.archivos li {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.archivos li img {
+    margin-right: 10px;
+}
+
+.archivos li a {
+    flex-grow: 1;
+    color: #333;
+    text-decoration: none;
+}
+
+.archivos li form {
+    margin-left: 10px;
+}
+
+.archivos li button.eliminar {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.archivos li button.eliminar:hover {
+    background-color: #c0392b;
+}
